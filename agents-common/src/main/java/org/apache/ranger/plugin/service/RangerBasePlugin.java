@@ -19,12 +19,7 @@
 
 package org.apache.ranger.plugin.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +31,7 @@ import org.apache.ranger.audit.provider.AuditHandler;
 import org.apache.ranger.audit.provider.AuditProviderFactory;
 import org.apache.ranger.audit.provider.StandAloneAuditProviderFactory;
 import org.apache.ranger.authorization.hadoop.config.RangerConfiguration;
+import org.apache.ranger.authorization.hadoop.config.RangerPluginConfig;
 import org.apache.ranger.authorization.utils.StringUtil;
 import org.apache.ranger.plugin.model.RangerPolicy;
 import org.apache.ranger.plugin.model.RangerServiceDef;
@@ -61,6 +57,7 @@ public class RangerBasePlugin {
 
 	private static Map<String, RangerBasePlugin> servicePluginMap = new ConcurrentHashMap<>();
 
+	private RangerPluginConfig          pluginConfig;
 	private String                    serviceType;
 	private String                    appId;
 	private String                    serviceName;
@@ -129,8 +126,16 @@ public class RangerBasePlugin {
 		this.appId       = appId;
 	}
 
+	public RangerBasePlugin(RangerPluginConfig pluginConfig) {
+		this.pluginConfig  = pluginConfig;
+	}
+
 	public String getServiceType() {
 		return serviceType;
+	}
+
+	public RangerPluginConfig getConfig() {
+		return pluginConfig;
 	}
 
 	public String getClusterName() {
@@ -474,7 +479,7 @@ public class RangerBasePlugin {
 			try {
 				@SuppressWarnings("unchecked")
 				Class<RangerAdminClient> adminClass = (Class<RangerAdminClient>)Class.forName(policySourceImpl);
-				
+
 				ret = adminClass.newInstance();
 			} catch (Exception excp) {
 				LOG.error("failed to instantiate policy source of type '" + policySourceImpl + "'. Will use policy source of type '" + RangerAdminRESTClient.class.getName() + "'", excp);
@@ -496,7 +501,7 @@ public class RangerBasePlugin {
 	private void auditGrantRevoke(GrantRevokeRequest request, String action, boolean isSuccess, RangerAccessResultProcessor resultProcessor) {
 		if(request != null && resultProcessor != null) {
 			RangerAccessRequestImpl accessRequest = new RangerAccessRequestImpl();
-	
+
 			accessRequest.setResource(new RangerAccessResourceImpl(StringUtil.toStringObjectMap(request.getResource())));
 			accessRequest.setUser(request.getGrantor());
 			accessRequest.setAccessType(RangerPolicyEngine.ADMIN_ACCESS);

@@ -31,8 +31,8 @@ public class RangerConfiguration extends Configuration {
 	private static final Logger LOG = Logger.getLogger(RangerConfiguration.class);
 	
 	private static volatile RangerConfiguration config;
-	
-	private RangerConfiguration() {
+
+	protected RangerConfiguration() {
 		super(false);
 	}
 
