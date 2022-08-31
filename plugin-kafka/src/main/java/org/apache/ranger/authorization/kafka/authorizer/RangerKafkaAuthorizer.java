@@ -27,7 +27,6 @@ import javax.security.auth.Subject;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.network.ListenerName;
 import org.apache.kafka.common.security.JaasContext;
-import org.apache.kafka.common.security.JaasContext.Type;
 import org.apache.kafka.common.security.auth.KafkaPrincipal;
 import org.apache.kafka.common.security.auth.SecurityProtocol;
 
