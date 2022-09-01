@@ -44,10 +44,12 @@ public class XMLUtils {
 	private static final String XMLCONFIG_VALUE_TAGNAME = "value";
 
 	public static void loadConfig(String configFileName, Map<Object, Object> properties) {
+		LOG.info("read file: " + configFileName);
 		try (InputStream input = getFileInputStream(configFileName)) {
+			System.out.println("input is null: " + (input == null));
 			loadConfig(input, properties);
 		} catch (Exception e) {
-			LOG.error("Error loading " + configFileName + " : ", e);
+			LOG.error("Error loading ==> " + configFileName + " : ", e);
 		}
 	}
 
