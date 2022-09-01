@@ -47,7 +47,7 @@ public class XMLUtils {
 		try (InputStream input = getFileInputStream(configFileName)) {
 			loadConfig(input, properties);
 		} catch (Exception e) {
-			LOG.error("Error loading : ", e);
+			LOG.error("Error loading " + configFileName + " : ", e);
 		}
 	}
 
