@@ -444,32 +444,31 @@ public class UserGroupSyncConfig  {
 	}
 
 	private String getUserGroupSourceClassName() {
-		String val =  prop.getProperty(UGSYNC_SOURCE_CLASS_PARAM);
+		String val = prop.getProperty(UGSYNC_SOURCE_CLASS_PARAM);
 		String className = UGSYNC_SOURCE_CLASS;
-		
+
 		String syncSource = null;
 
-		if(val == null || val.trim().isEmpty()) {
-			syncSource=getSyncSource();
-		}
-		else {
+		if (val == null || val.trim().isEmpty()) {
+			syncSource = getSyncSource();
+		} else {
 			if (val.equalsIgnoreCase(LGSYNC_SOURCE_CLASS) && isDeltaSyncEnabled()) {
 				val = LGSYNC_DELTASYNC_SOURCE_CLASS;
 			}
 			syncSource = val;
 		}
 
-		className = val;
+		// className = val;
 
-		if(syncSource!=null && syncSource.equalsIgnoreCase("UNIX")){
+		if (syncSource != null && syncSource.equalsIgnoreCase("UNIX")) {
 			className = UGSYNC_SOURCE_CLASS;
-		}else if(syncSource!=null && syncSource.equalsIgnoreCase("LDAP")){
+		} else if (syncSource != null && syncSource.equalsIgnoreCase("LDAP")) {
 			if (!isDeltaSyncEnabled()) {
 				className = LGSYNC_SOURCE_CLASS;
 			} else {
 				className = LGSYNC_DELTASYNC_SOURCE_CLASS;
 			}
-		} 
+		}
 
 		return className;
 	}
@@ -477,6 +476,7 @@ public class UserGroupSyncConfig  {
 	public UserGroupSource getUserGroupSource() throws Throwable {
 
 		String className = getUserGroupSourceClassName();
+		LOG.info("className: " + className);
 
 		Class<UserGroupSource> ugSourceClass = (Class<UserGroupSource>)Class.forName(className);
 
