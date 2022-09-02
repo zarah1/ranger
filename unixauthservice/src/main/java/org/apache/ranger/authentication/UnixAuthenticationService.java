@@ -198,11 +198,11 @@ public class UnixAuthenticationService {
 		String defaultEnabledProtocols = "SSLv2Hello, TLSv1, TLSv1.1, TLSv1.2";
 		String enabledProtocols = prop.getProperty("ranger.usersync.https.ssl.enabled.protocols", defaultEnabledProtocols);
 		enabledProtocolsList=new ArrayList<String>(Arrays.asList(enabledProtocols.toUpperCase().trim().split("\\s*,\\s*")));
-//		LOG.info("Key:" + keyStorePath);
-//		LOG.info("KeyPassword:" + keyStorePathPassword);
-//		LOG.info("TrustStore:" + trustStorePath);
-//		LOG.info("PortNum:" + portNum);
-//		LOG.info("ValidatorProg:" + validatorProg);
+		LOG.info("Key:" + keyStorePath);
+		LOG.info("KeyPassword:" + keyStorePathPassword);
+		LOG.info("TrustStore:" + trustStorePath);
+		LOG.info("PortNum:" + portNum);
+		LOG.info("ValidatorProg:" + validatorProg);
 		
 	}
 	
