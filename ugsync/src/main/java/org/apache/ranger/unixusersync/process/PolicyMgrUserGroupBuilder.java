@@ -769,6 +769,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		if ( LOG.isDebugEnabled() ) {
 			LOG.debug("RESPONSE: [" + response + "]");
 		}
+		LOG.info("RESPONSE: [" + response + "]");
 		ret = gson.fromJson(response, UserGroupInfo.class);
 
 		if ( ret != null) {
