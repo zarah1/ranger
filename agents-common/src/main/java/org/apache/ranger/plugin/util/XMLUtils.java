@@ -95,7 +95,6 @@ public class XMLUtils {
 				}
 			}
 
-			LOG.info("properties info: " + properties.toString());
 		} catch (Exception e) {
 			LOG.error("Error loadConfig : ", e);
 		}
