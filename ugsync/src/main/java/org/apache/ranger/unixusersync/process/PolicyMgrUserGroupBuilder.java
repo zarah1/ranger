@@ -902,7 +902,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 			LOG.error("Failed to communicate Ranger Admin : ", t);
 		}
 		if (clientResp != null) {
-			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().clientResp: " + clientResp.toString());
+			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().clientResp: " + clientResp.getEntity(String.class));
 			if (!(clientResp.toString().contains(apiURL))) {
 				clientResp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else if (clientResp.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
@@ -1034,7 +1034,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 
 
-   private XUserGroupInfo addXUserGroupInfo(XUserInfo aUserInfo, XGroupInfo aGroupInfo) {
+   	private XUserGroupInfo addXUserGroupInfo(XUserInfo aUserInfo, XGroupInfo aGroupInfo) {
 
 
 	    XUserGroupInfo ugInfo = new XUserGroupInfo();
@@ -1380,74 +1380,71 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 
 	private synchronized Client getClient() {
-
 		Client ret = null;
 		if (policyMgrBaseUrl.startsWith("https://")) {
+			LOG.info("PolicyMgrUserGroupBuilder.getClient().https");
 			ClientConfig config = new DefaultClientConfig();
 
 			if (sslContext == null) {
 
 				try {
 
-				KeyManager[] kmList = null;
-				TrustManager[] tmList = null;
+					KeyManager[] kmList = null;
+					TrustManager[] tmList = null;
 
-				if (keyStoreFile != null && keyStoreFilepwd != null) {
+					if (keyStoreFile != null && keyStoreFilepwd != null) {
 
-					KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-					InputStream in = null;
-					try {
-						in = getFileInputStream(keyStoreFile);
-						if (in == null) {
-							LOG.error("Unable to obtain keystore from file [" + keyStoreFile + "]");
-							return ret;
+						KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+						InputStream in = null;
+						try {
+							in = getFileInputStream(keyStoreFile);
+							if (in == null) {
+								LOG.error("Unable to obtain keystore from file [" + keyStoreFile + "]");
+								return ret;
+							}
+							keyStore.load(in, keyStoreFilepwd.toCharArray());
+							KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+							keyManagerFactory.init(keyStore, keyStoreFilepwd.toCharArray());
+							kmList = keyManagerFactory.getKeyManagers();
+						} finally {
+							if (in != null) {
+								in.close();
+							}
 						}
-						keyStore.load(in, keyStoreFilepwd.toCharArray());
-						KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-						keyManagerFactory.init(keyStore, keyStoreFilepwd.toCharArray());
-						kmList = keyManagerFactory.getKeyManagers();
+
 					}
-					finally {
-						if (in != null) {
-							in.close();
+
+					if (trustStoreFile != null && trustStoreFilepwd != null) {
+
+						KeyStore trustStore = KeyStore.getInstance(trustStoreType);
+						InputStream in = null;
+						try {
+							in = getFileInputStream(trustStoreFile);
+							if (in == null) {
+								LOG.error("Unable to obtain keystore from file [" + trustStoreFile + "]");
+								return ret;
+							}
+							trustStore.load(in, trustStoreFilepwd.toCharArray());
+							TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+							trustManagerFactory.init(trustStore);
+							tmList = trustManagerFactory.getTrustManagers();
+						} finally {
+							if (in != null) {
+								in.close();
+							}
 						}
 					}
 
-				}
+					sslContext = SSLContext.getInstance("SSL");
 
-				if (trustStoreFile != null && trustStoreFilepwd != null) {
+					sslContext.init(kmList, tmList, new SecureRandom());
 
-					KeyStore trustStore = KeyStore.getInstance(trustStoreType);
-					InputStream in = null;
-					try {
-						in = getFileInputStream(trustStoreFile);
-						if (in == null) {
-							LOG.error("Unable to obtain keystore from file [" + trustStoreFile + "]");
-							return ret;
+					hv = new HostnameVerifier() {
+						public boolean verify(String urlHostName, SSLSession session) {
+							return session.getPeerHost().equals(urlHostName);
 						}
-						trustStore.load(in, trustStoreFilepwd.toCharArray());
-						TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-						trustManagerFactory.init(trustStore);
-						tmList = trustManagerFactory.getTrustManagers();
-					}
-					finally {
-						if (in != null) {
-							in.close();
-						}
-					}
-				}
-
-				sslContext = SSLContext.getInstance("SSL");
-
-				sslContext.init(kmList, tmList, new SecureRandom());
-
-				hv = new HostnameVerifier() {
-					public boolean verify(String urlHostName, SSLSession session) {
-						return session.getPeerHost().equals(urlHostName);
-					}
-				};
-				}
-				catch(Throwable t) {
+					};
+				} catch (Throwable t) {
 					throw new RuntimeException("Unable to create SSLConext for communication to policy manager", t);
 				}
 
@@ -1458,19 +1455,19 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 			ret = Client.create(config);
 
 
-		}
-		else {
+		} else {
+			LOG.info("PolicyMgrUserGroupBuilder.getClient().http");
 			ClientConfig cc = new DefaultClientConfig();
-		    cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-		    ret = Client.create(cc);
+			cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+			ret = Client.create(cc);
 		}
-		if(!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab))){
-			if(ret!=null){
-				 String username = config.getPolicyMgrUserName();
-				 String password = config.getPolicyMgrPassword();
-				 if(username!=null && !username.trim().isEmpty() && password!=null && !password.trim().isEmpty()){
-					 ret.addFilter(new HTTPBasicAuthFilter(username, password));
-				 }
+		if (!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab))) {
+			if (ret != null) {
+				String username = config.getPolicyMgrUserName();
+				String password = config.getPolicyMgrPassword();
+				if (username != null && !username.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
+					ret.addFilter(new HTTPBasicAuthFilter(username, password));
+				}
 			}
 		}
 		return ret;
