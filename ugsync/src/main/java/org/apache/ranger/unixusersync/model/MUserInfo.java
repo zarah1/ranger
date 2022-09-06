@@ -19,6 +19,8 @@
 
  package org.apache.ranger.unixusersync.model;
 
+import java.util.Arrays;
+
 public class MUserInfo {
 	
 	private String loginId;
@@ -58,5 +60,15 @@ public class MUserInfo {
 	public void setUserRoleList(String[] userRoleList) {
 		this.userRoleList = userRoleList;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "MUserInfo{" +
+				"loginId='" + loginId + '\'' +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", emailAddress='" + emailAddress + '\'' +
+				", userRoleList=" + Arrays.toString(userRoleList) +
+				'}';
+	}
 }

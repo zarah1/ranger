@@ -1213,11 +1213,14 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 	private MUserInfo getMUser(MUserInfo userInfo, MUserInfo ret) {
 		if(LOG.isDebugEnabled()){
-			LOG.debug("==> PolicyMgrUserGroupBuilder.getMUser()");
+			LOG.debug("==> PolicyMgrUserGroupBuilder.getMUser().userInfo: " + userInfo.toString());
 		}
 		String response = null;
 		Gson gson = new GsonBuilder().create();
 		String jsonString = gson.toJson(userInfo);
+		if(LOG.isDebugEnabled()){
+			LOG.debug(String.format("==> PolicyMgrUserGroupBuilder.getMUser().jsonString: %s, isRangerCookieEnabled: %s", jsonString, isRangerCookieEnabled));
+		}
 		if (isRangerCookieEnabled) {
 			response = cookieBasedUploadEntity(jsonString, PM_ADD_LOGIN_USER_URI);
 		} else {
@@ -1237,7 +1240,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		return ret;
 	}
 
-	private String cookieBasedUploadEntity(String jsonString, String apiURL ) {
+	private String cookieBasedUploadEntity(String jsonString, String apiURL) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.cookieBasedUploadEntity()");
 		}
