@@ -837,6 +837,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.tryUploadEntityWithCookie()");
 		}
+		LOG.info("==> PolicyMgrUserGroupBuilder.tryUploadEntityWithCookie().apiURL: " + apiURL);
 		String response = null;
 		ClientResponse clientResp = null;
 		WebResource webResource = createWebResourceForCookieAuth(apiURL);
@@ -848,6 +849,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 			LOG.error("Failed to communicate Ranger Admin : ", t);
 		}
 		if (clientResp != null) {
+			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityWithCookie().clientResp: " + clientResp.toString());
 			if (!(clientResp.toString().contains(apiURL))) {
 				clientResp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				sessionId = null;
@@ -885,6 +887,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		if(LOG.isDebugEnabled()){
 			LOG.debug("==> PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred()");
 		}
+		LOG.info("==> PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().apiURL: " + apiURL);
 		String response = null;
 		ClientResponse clientResp = null;
 		Client c = getClient();
@@ -899,6 +902,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 			LOG.error("Failed to communicate Ranger Admin : ", t);
 		}
 		if (clientResp != null) {
+			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().clientResp: " + clientResp.toString());
 			if (!(clientResp.toString().contains(apiURL))) {
 				clientResp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else if (clientResp.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
