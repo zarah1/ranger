@@ -66,6 +66,7 @@ public class SecureClientLogin {
 			subject.getPrincipals().add(new User(user, AuthenticationMethod.KERBEROS, login));
 			login.logout();
 			login.login();
+			LOG.info("loginUserFromKeytab success, user = " + user + " and path = " + path);
 			return login.getSubject();
 		} catch (LoginException le) {
 			throw new IOException("Login failure for " + user + " from keytab " + path, le);

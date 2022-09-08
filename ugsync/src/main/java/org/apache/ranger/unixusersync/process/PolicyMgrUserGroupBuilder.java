@@ -50,6 +50,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.security.SecureClientLogin;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -75,6 +76,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
@@ -585,7 +587,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 				response = r.accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
 			}
-			LOG.debug("RESPONSE: [" + response + "]");
+			LOG.info("RESPONSE: [" + response + "]");
 
 			GetXGroupListResponse groupList = gson.fromJson(response, GetXGroupListResponse.class);
 
@@ -895,14 +897,14 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		if ( LOG.isDebugEnabled() ) {
 		   LOG.debug("USER GROUP MAPPING" + jsonString);
 		}
-		try{
-			clientResp=r.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, jsonString);
-		}
-		catch(Throwable t){
+		try {
+			clientResp = r.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, jsonString);
+			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().r.accept: " + r.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class).getEntity(String.class));
+		} catch (Throwable t) {
 			LOG.error("Failed to communicate Ranger Admin : ", t);
 		}
 		if (clientResp != null) {
-			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().clientResp: " + clientResp.getEntity(String.class));
+			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().clientResp: " + clientResp.getEntity(String.class) + ", USER GROUP: " + jsonString);
 			if (!(clientResp.toString().contains(apiURL))) {
 				clientResp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else if (clientResp.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
@@ -1380,7 +1382,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 
 	private synchronized Client getClient() {
-		Client ret = null;
+		Client client = null;
 		if (policyMgrBaseUrl.startsWith("https://")) {
 			LOG.info("PolicyMgrUserGroupBuilder.getClient().https");
 			ClientConfig config = new DefaultClientConfig();
@@ -1400,7 +1402,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 							in = getFileInputStream(keyStoreFile);
 							if (in == null) {
 								LOG.error("Unable to obtain keystore from file [" + keyStoreFile + "]");
-								return ret;
+								return client;
 							}
 							keyStore.load(in, keyStoreFilepwd.toCharArray());
 							KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
@@ -1422,7 +1424,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 							in = getFileInputStream(trustStoreFile);
 							if (in == null) {
 								LOG.error("Unable to obtain keystore from file [" + trustStoreFile + "]");
-								return ret;
+								return client;
 							}
 							trustStore.load(in, trustStoreFilepwd.toCharArray());
 							TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -1449,28 +1451,30 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 				}
 
 			}
+			config.getClasses().add(JacksonJsonProvider.class);
 
 			config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hv, sslContext));
 
-			ret = Client.create(config);
+			client = Client.create(config);
 
 
 		} else {
 			LOG.info("PolicyMgrUserGroupBuilder.getClient().http");
-			ClientConfig cc = new DefaultClientConfig();
-			cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-			ret = Client.create(cc);
+			ClientConfig config = new DefaultClientConfig();
+			config.getClasses().add(JacksonJsonProvider.class);
+			config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+			client = Client.create(config);
 		}
 		if (!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab))) {
-			if (ret != null) {
+			if (client != null) {
 				String username = config.getPolicyMgrUserName();
 				String password = config.getPolicyMgrPassword();
 				if (username != null && !username.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
-					ret.addFilter(new HTTPBasicAuthFilter(username, password));
+					client.addFilter(new HTTPBasicAuthFilter(username, password));
 				}
 			}
 		}
-		return ret;
+		return client;
 	}
 
 	private WebResource createWebResourceForCookieAuth(String url) {

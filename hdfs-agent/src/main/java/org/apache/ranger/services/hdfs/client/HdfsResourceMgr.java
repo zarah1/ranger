@@ -39,7 +39,7 @@ public class HdfsResourceMgr {
 		Map<String, Object> ret = null;
 		
 		if(LOG.isDebugEnabled()) {
-			LOG.debug("<== HdfsResourceMgr.connectionTest ServiceName: "+ serviceName + "Configs" + configs );
+			LOG.debug("<== HdfsResourceMgr.connectionTest ServiceName: "+ serviceName + ", Configs: " + configs);
 		}	
 		
 		try {
