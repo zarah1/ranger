@@ -50,7 +50,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.security.SecureClientLogin;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -899,7 +898,6 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		}
 		try {
 			clientResp = r.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class, jsonString);
-			LOG.info("PolicyMgrUserGroupBuilder.tryUploadEntityInfoWithCred().r.accept: " + r.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(ClientResponse.class).getEntity(String.class));
 		} catch (Throwable t) {
 			LOG.error("Failed to communicate Ranger Admin : ", t);
 		}
@@ -1192,6 +1190,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
         userInfo.setUserRoleList(str);
 		if (authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab)) {
 			try {
+				LOG.info("nameRules: " + nameRules);
 				Subject sub = SecureClientLogin.loginUserFromKeytab(principal, keytab, nameRules);
 				final MUserInfo result = ret;
 				final MUserInfo userInfoFinal = userInfo;
