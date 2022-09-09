@@ -45,17 +45,8 @@ import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.security.HiveAuthenticationProvider;
 import org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessControlException;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzContext;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzPluginException;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthzSessionContext;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveMetastoreClientFactory;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePolicyProvider;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrincipal;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilege;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeInfo;
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.*;
+// import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePolicyProvider;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivObjectActionType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.HivePrivilegeObjectType;
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveResourceACLs;
@@ -133,17 +124,17 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		}
 	}
 
-	@Override
-	public HivePolicyProvider getHivePolicyProvider() throws HiveAuthzPluginException {
-		if (hivePlugin == null) {
-			throw new HiveAuthzPluginException();
-		}
-		RangerHivePolicyProvider policyProvider = new RangerHivePolicyProvider(hivePlugin);
-		if (policyProvider.getAuthContext().getPolicyEngine() == null) {
-			throw new HiveAuthzPluginException();
-		}
-		return policyProvider;
-	}
+//	@Override
+//	public HivePolicyProvider getHivePolicyProvider() throws HiveAuthzPluginException {
+//		if (hivePlugin == null) {
+//			throw new HiveAuthzPluginException();
+//		}
+//		RangerHivePolicyProvider policyProvider = new RangerHivePolicyProvider(hivePlugin);
+//		if (policyProvider.getAuthContext().getPolicyEngine() == null) {
+//			throw new HiveAuthzPluginException();
+//		}
+//		return policyProvider;
+//	}
 
 	/**
 	 * Grant privileges for principals on the object
@@ -313,7 +304,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 					RangerHiveResource resource = new RangerHiveResource(HiveObjectType.DATABASE, null);
 					RangerHiveAccessRequest request = new RangerHiveAccessRequest(resource, user, groups, hiveOpType.name(), HiveAccessType.USE, context, sessionContext, clusterName);
 					requests.add(request);
-				} else if ( hiveOpType ==  HiveOperationType.REPLDUMP) {
+				} else if (hiveOpType.name().equals("REPLDUMP")) { // HiveOperationType.REPLDUMP
 					// This happens when REPL DUMP command with null inputHObjs is sent in checkPrivileges()
 					// following parsing is done for Audit info
 					RangerHiveResource resource  = null;
@@ -370,7 +361,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 					}
 				}
 			} else {
-				if (hiveOpType == HiveOperationType.REPLLOAD) {
+				if (hiveOpType.name().equals("REPLLOAD")) { // HiveOperationType.REPLLOAD
 					// This happens when REPL LOAD command with null inputHObjs is sent in checkPrivileges()
 					// following parsing is done for Audit info
 					RangerHiveResource resource = null;
@@ -971,9 +962,9 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				}
 			break;
 
-			case SERVICE_NAME:
-				objType = HiveObjectType.SERVICE_NAME;
-			break;
+//			case SERVICE_NAME:
+//				objType = HiveObjectType.SERVICE_NAME;
+//			break;
 
 			case COLUMN:
 				// Thejas: this value is unused in Hive; the case should not be hit.
@@ -1025,7 +1016,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				case CREATETABLE:
 				case CREATEVIEW:
 				case CREATETABLE_AS_SELECT:
-				case CREATE_MATERIALIZED_VIEW:
+//				case CREATE_MATERIALIZED_VIEW:
 					if(hiveObj.getType() == HivePrivilegeObjectType.TABLE_OR_VIEW) {
 						accessType = isInput ? HiveAccessType.SELECT : HiveAccessType.CREATE;
 					}
@@ -1085,7 +1076,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				case DROPINDEX:
 				case DROPTABLE:
 				case DROPVIEW:
-				case DROP_MATERIALIZED_VIEW:
+//				case DROP_MATERIALIZED_VIEW:
 				case DROPDATABASE:
 					accessType = HiveAccessType.DROP;
 				break;
@@ -1155,7 +1146,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				case SWITCHDATABASE:
 				case DESCDATABASE:
 				case SHOWTABLES:
-				case SHOWVIEWS:
+//				case SHOWVIEWS:
 					accessType = HiveAccessType.USE;
 				break;
 
@@ -1168,30 +1159,30 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 					accessType = HiveAccessType.NONE; // access check will be performed at the ranger-admin side
 				break;
 
-				case REPLDUMP:
-				case REPLLOAD:
-				case REPLSTATUS:
-					accessType = HiveAccessType.REPLADMIN;
-				break;
-
-				case KILL_QUERY:
-				case CREATE_RESOURCEPLAN:
-				case SHOW_RESOURCEPLAN:
-				case ALTER_RESOURCEPLAN:
-				case DROP_RESOURCEPLAN:
-				case CREATE_TRIGGER:
-				case ALTER_TRIGGER:
-				case DROP_TRIGGER:
-				case CREATE_POOL:
-				case ALTER_POOL:
-				case DROP_POOL:
-				case CREATE_MAPPING:
-				case ALTER_MAPPING:
-				case DROP_MAPPING:
-				case LLAP_CACHE_PURGE:
-				case LLAP_CLUSTER_INFO:
-					accessType = HiveAccessType.SERVICEADMIN;
-				break;
+//				case REPLDUMP:
+//				case REPLLOAD:
+//				case REPLSTATUS:
+//					accessType = HiveAccessType.REPLADMIN;
+//				break;
+//
+//				case KILL_QUERY:
+//				case CREATE_RESOURCEPLAN:
+//				case SHOW_RESOURCEPLAN:
+//				case ALTER_RESOURCEPLAN:
+//				case DROP_RESOURCEPLAN:
+//				case CREATE_TRIGGER:
+//				case ALTER_TRIGGER:
+//				case DROP_TRIGGER:
+//				case CREATE_POOL:
+//				case ALTER_POOL:
+//				case DROP_POOL:
+//				case CREATE_MAPPING:
+//				case ALTER_MAPPING:
+//				case DROP_MAPPING:
+//				case LLAP_CACHE_PURGE:
+//				case LLAP_CLUSTER_INFO:
+//					accessType = HiveAccessType.SERVICEADMIN;
+//				break;
 
 				case ADD:
 				case COMPILE:
@@ -1307,7 +1298,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			case SHOW_CREATEDATABASE:
 			case SHOW_CREATETABLE:
 			case SHOWFUNCTIONS:
-			case SHOWVIEWS:
+//			case SHOWVIEWS:
 			case SHOWINDEXES:
 			case SHOWPARTITIONS:
 			case SHOWLOCKS:
@@ -1319,13 +1310,13 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			case DROPMACRO:
 			case CREATEVIEW:
 			case DROPVIEW:
-			case CREATE_MATERIALIZED_VIEW:
+//			case CREATE_MATERIALIZED_VIEW:
 			case CREATEINDEX:
 			case DROPINDEX:
 			case ALTERINDEX_REBUILD:
 			case ALTERVIEW_PROPERTIES:
 			case DROPVIEW_PROPERTIES:
-			case DROP_MATERIALIZED_VIEW:
+//			case DROP_MATERIALIZED_VIEW:
 			case LOCKTABLE:
 			case UNLOCKTABLE:
 			case CREATEROLE:
@@ -1362,25 +1353,25 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			case GET_TABLES:
 			case GET_TABLETYPES:
 			case GET_TYPEINFO:
-			case REPLDUMP:
-			case REPLLOAD:
-			case REPLSTATUS:
-			case KILL_QUERY:
-			case LLAP_CACHE_PURGE:
-			case LLAP_CLUSTER_INFO:
-			case CREATE_RESOURCEPLAN:
-			case SHOW_RESOURCEPLAN:
-			case ALTER_RESOURCEPLAN:
-			case DROP_RESOURCEPLAN:
-			case CREATE_TRIGGER:
-			case ALTER_TRIGGER:
-			case DROP_TRIGGER:
-			case CREATE_POOL:
-			case ALTER_POOL:
-			case DROP_POOL:
-			case CREATE_MAPPING:
-			case ALTER_MAPPING:
-			case DROP_MAPPING:
+//			case REPLDUMP:
+//			case REPLLOAD:
+//			case REPLSTATUS:
+//			case KILL_QUERY:
+//			case LLAP_CACHE_PURGE:
+//			case LLAP_CLUSTER_INFO:
+//			case CREATE_RESOURCEPLAN:
+//			case SHOW_RESOURCEPLAN:
+//			case ALTER_RESOURCEPLAN:
+//			case DROP_RESOURCEPLAN:
+//			case CREATE_TRIGGER:
+//			case ALTER_TRIGGER:
+//			case DROP_TRIGGER:
+//			case CREATE_POOL:
+//			case ALTER_POOL:
+//			case DROP_POOL:
+//			case CREATE_MAPPING:
+//			case ALTER_MAPPING:
+//			case DROP_MAPPING:
 				break;
 		}
 

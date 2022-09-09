@@ -254,7 +254,7 @@ public class RangerHiveAuditHandler extends RangerDefaultAuditHandler {
 			if (!ArrayUtils.isEmpty(cmd) && cmd.length > 1) {
 				ret = cmd[0] + " " + cmd[1] + "..";
 			}
-			if (!HiveOperationType.KILL_QUERY.name().equalsIgnoreCase(hiveOperationType)) {
+			if (!HiveOperationType.ALTERVIEW_AS.name().equalsIgnoreCase(hiveOperationType)) {
 				if (!ArrayUtils.isEmpty(cmd) && cmd.length > 2) {
 					ret = cmd[0] + " " + cmd[1] + " " + cmd[2] + "..";
 				}
