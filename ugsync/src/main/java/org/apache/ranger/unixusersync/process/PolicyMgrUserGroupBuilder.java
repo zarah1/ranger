@@ -569,6 +569,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 	}
 
 	private void buildGroupList() {
+		LOG.info("PolicyMgrUserGroupBuilder.buildGroupList().sessionId: " + sessionId);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.buildGroupList()");
 		}
@@ -608,6 +609,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 	}
 
 	private void buildUserList() {
+		LOG.info("PolicyMgrUserGroupBuilder.buildUserList().sessionId: " + sessionId);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.buildUserList()");
 		}
@@ -645,6 +647,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 	}
 
 	private void buildUserGroupLinkList() {
+		LOG.info("PolicyMgrUserGroupBuilder.buildUserGroupLinkList().sessionId: " + sessionId);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.buildUserGroupLinkList()");
 		}
@@ -1217,6 +1220,7 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 
 
 	private MUserInfo getMUser(MUserInfo userInfo, MUserInfo ret) {
+		LOG.info("PolicyMgrUserGroupBuilder.getMUser().sessionId: " + sessionId);
 		if(LOG.isDebugEnabled()){
 			LOG.debug("==> PolicyMgrUserGroupBuilder.getMUser().userInfo: " + userInfo.toString());
 		}
