@@ -98,7 +98,7 @@ public class HIVERangerAuthorizerTest {
         conf.set(HiveConf.ConfVars.METASTOREPWD.varname, "youPassword");
         conf.set(HiveConf.ConfVars.HIVE_SERVER2_WEBUI_PORT.varname, "0");
         conf.set(HiveConf.ConfVars.HIVE_EXECUTION_ENGINE.varname,"mr");
-        conf.set(HiveConf.ConfVars.HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname,"true");
+        //conf.set(HiveConf.ConfVars.HIVE_SERVER2_ACTIVE_PASSIVE_HA_ENABLE.varname,"true");
 
         hiveServer = new HiveServer2();
         hiveServer.init(conf);
