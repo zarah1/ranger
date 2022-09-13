@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ranger.unixusersync.config.UserGroupSyncConfig;
 import org.apache.ranger.unixusersync.model.UgsyncAuditInfo;
@@ -86,6 +87,7 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 	private UgsyncAuditInfo ugsyncAuditInfo;
 	private UnixSyncSourceInfo unixSyncSourceInfo;
 	private boolean isStartupFlag = false;
+	private boolean isMockRun = false;
 	Set<String> allGroups = new HashSet<>();
 
 
@@ -108,6 +110,10 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 		unixSyncSourceInfo.setFileName(unixPasswordFile);
 		unixSyncSourceInfo.setMinUserId(config.getMinUserId());
 		unixSyncSourceInfo.setMinGroupId(config.getMinGroupId());
+		isMockRun = config.isMockRunEnabled();
+		if (isMockRun) {
+			LOG.setLevel(Level.DEBUG);
+		}
 
 		LOG.debug("Minimum UserId: " + minimumUserId + ", minimum GroupId: " + minimumGroupId);
 
@@ -158,6 +164,9 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 
 	@Override
 	public void updateSink(UserGroupSink sink) throws Throwable {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("==> UnixUserGroupBuilder.updateSink()");
+		}
 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date lastModifiedTime = new Date(passwordFileModifiedAt);
 		Date syncTime = new Date(System.currentTimeMillis());
@@ -188,10 +197,16 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 			LOG.error("sink.postUserGroupAuditInfo failed with exception: ", t);
 		}
 		isStartupFlag = false;
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("<== UnixUserGroupBuilder.updateSink()");
+		}
 	}
 	
 	
 	private void buildUserGroupInfo() throws Throwable {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("==> UnixUserGroupBuilder.buildUserGroupInfo()");
+		}
 		user2GroupListMap = new HashMap<String,List<String>>();
 		groupId2groupNameMap = new HashMap<String, String>();
 		internalUser2GroupListMap = new HashMap<String,List<String>>();
@@ -212,6 +227,9 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 
 		if (LOG.isDebugEnabled()) {
 			print();
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("<== UnixUserGroupBuilder.buildUserGroupInfo()");
 		}
 	}
 	
@@ -267,6 +285,9 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 					userName = tokens[0];
 					userId = tokens[2];
 					groupId = tokens[3];
+					if(LOG.isDebugEnabled()) {
+						LOG.debug(String.format("UnixUserGroupBuilder.buildUnixUserList()==> userName: %s, userId: %s, groupId: %s", userName, userId, groupId));
+					}
 				}
 				catch(ArrayIndexOutOfBoundsException aiobe) {
 					LOG.warn("Ignoring line - [" + line + "]: Unable to parse line for getting user information", aiobe);
@@ -440,6 +461,9 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 				if (line.trim().isEmpty())
 					continue;
 
+				if(LOG.isDebugEnabled()) {
+					LOG.debug("UnixUserGroupBuilder.buildUnixGroupList(): " + line);
+				}
 				parseMembers(line);
 			}
 		} finally {
