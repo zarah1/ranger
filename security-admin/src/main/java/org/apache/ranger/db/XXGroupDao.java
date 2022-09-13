@@ -23,13 +23,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.ranger.common.db.BaseDao;
 import org.apache.ranger.entity.XXGroup;
 import org.springframework.stereotype.Service;
 
 @Service
 public class XXGroupDao extends BaseDao<XXGroup> {
-
+	private static final Logger logger = Logger.getLogger(XXGroupDao.class);
 	public XXGroupDao(RangerDaoManagerBase daoManager) {
 		super(daoManager);
 	}
@@ -56,13 +57,12 @@ public class XXGroupDao extends BaseDao<XXGroup> {
 			return null;
 		}
 		try {
-
 			return (XXGroup) getEntityManager()
 					.createNamedQuery("XXGroup.findByGroupName")
 					.setParameter("name", groupName)
 					.getSingleResult();
 		} catch (Exception e) {
-
+			logger.error("Failed to findByGroupName", e);
 		}
 		return null;
 	}
