@@ -1433,14 +1433,16 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		    cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 		    ret = Client.create(cc);
 		}
-		if(!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab))){
-			if(ret!=null){
-				 String username = config.getPolicyMgrUserName();
-				 String password = config.getPolicyMgrPassword();
-				 if(username!=null && !username.trim().isEmpty() && password!=null && !password.trim().isEmpty()){
-					 ret.addFilter(new HTTPBasicAuthFilter(username, password));
-				 }
-			}
+//		if(!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType) && SecureClientLogin.isKerberosCredentialExists(principal, keytab))){
+//			if(ret!=null){
+//
+//			}
+//		}
+
+		String username = config.getPolicyMgrUserName();
+		String password = config.getPolicyMgrPassword();
+		if(username!=null && !username.trim().isEmpty() && password!=null && !password.trim().isEmpty()){
+			ret.addFilter(new HTTPBasicAuthFilter(username, password));
 		}
 		return ret;
 	}
