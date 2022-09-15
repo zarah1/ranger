@@ -87,7 +87,6 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 	private UgsyncAuditInfo ugsyncAuditInfo;
 	private UnixSyncSourceInfo unixSyncSourceInfo;
 	private boolean isStartupFlag = false;
-	private boolean isMockRun = false;
 	Set<String> allGroups = new HashSet<>();
 
 
@@ -110,10 +109,6 @@ public class UnixUserGroupBuilder implements UserGroupSource {
 		unixSyncSourceInfo.setFileName(unixPasswordFile);
 		unixSyncSourceInfo.setMinUserId(config.getMinUserId());
 		unixSyncSourceInfo.setMinGroupId(config.getMinGroupId());
-		isMockRun = config.isMockRunEnabled();
-		if (isMockRun) {
-			LOG.setLevel(Level.DEBUG);
-		}
 
 		LOG.debug("Minimum UserId: " + minimumUserId + ", minimum GroupId: " + minimumGroupId);
 

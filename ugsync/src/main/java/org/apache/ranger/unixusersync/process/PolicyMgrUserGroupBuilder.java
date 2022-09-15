@@ -174,9 +174,9 @@ public class PolicyMgrUserGroupBuilder implements UserGroupSink {
 		noOfModifiedGroups = 0;
 		isStartupFlag = true;
 		isRangerCookieEnabled = config.isUserSyncRangerCookieEnabled();
-		if (isMockRun) {
-			LOG.setLevel(Level.DEBUG);
-		}
+//		if (isMockRun) {
+//			LOG.setLevel(Level.DEBUG);
+//		}
 		sessionId=null;
 		keyStoreFile =  config.getSSLKeyStorePath();
 		keyStoreFilepwd = config.getSSLKeyStorePathPassword();
