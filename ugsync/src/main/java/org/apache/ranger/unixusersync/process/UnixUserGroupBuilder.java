@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ranger.unixusersync.config.UserGroupSyncConfig;
 import org.apache.ranger.unixusersync.model.UgsyncAuditInfo;

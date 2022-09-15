@@ -52,7 +52,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 
 import org.apache.hadoop.security.SecureClientLogin;
-import org.apache.log4j.Level;
+//import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ranger.plugin.util.URLEncoderUtil;
 import org.apache.ranger.unixusersync.config.UserGroupSyncConfig;
