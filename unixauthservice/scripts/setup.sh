@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+source /etc/profile
 if [ "${JAVA_HOME}" == "" ]
 then
 	echo "JAVA_HOME environment property not defined, aborting installation."

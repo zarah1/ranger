@@ -1515,6 +1515,7 @@ change_default_users_password(){
 log " --------- Running Ranger PolicyManager Web Application Install Script --------- "
 log "[I] uname=`uname`"
 log "[I] hostname=`hostname`"
+source /etc/profile
 init_variables
 get_distro
 check_java_version
