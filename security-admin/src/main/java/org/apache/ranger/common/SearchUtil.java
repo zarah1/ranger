@@ -390,6 +390,7 @@ public class SearchUtil {
 			boolean excludeWhereKeyword) {
 
 		Map<String, Object> paramList = searchCriteria.getParamList();
+		logger.info("SearchUtil.buildWhereClause().paramList: " + paramList);
 
 		StringBuilder whereClause = new StringBuilder(excludeWhereKeyword ? ""
 				: "WHERE 1 = 1 ");
@@ -515,6 +516,7 @@ public class SearchUtil {
 					}
 				}
 			} else if (searchField.getDataType() == SearchField.DATA_TYPE.STRING) {
+				logger.info("SearchUtil.buildWhereClause().searchField.getClientFieldName(): " + searchField.getClientFieldName());
 				String strFieldValue = (String) paramList.get(searchField
 						.getClientFieldName());
 				if (strFieldValue != null) {
