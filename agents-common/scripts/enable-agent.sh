@@ -225,9 +225,11 @@ if [ "${HCOMPONENT_NAME}" = "solr" ]; then
 elif [ "${HCOMPONENT_NAME}" = "kafka" ]; then
     HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/config
 elif [ "${HCOMPONENT_NAME}" = "hadoop" ]; then
-    HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/etc/hadoop
+    HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}
 elif [ "${HCOMPONENT_NAME}" = "yarn" ]; then
     HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/etc/hadoop
+elif [ "${HCOMPONENT_NAME}" = "hive" ]; then
+    HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}
 elif [ "${HCOMPONENT_NAME}" = "sqoop" ]; then
     HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/conf
 fi
