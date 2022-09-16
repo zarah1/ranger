@@ -50,6 +50,7 @@ then
 fi
 
 #Check for JAVA_HOME
+source /etc/profile
 if [ "${JAVA_HOME}" == "" ]
 then
     echo "ERROR: JAVA_HOME environment property not defined, aborting installation."
