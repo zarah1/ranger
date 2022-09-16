@@ -224,7 +224,7 @@ if [ "${HCOMPONENT_NAME}" = "solr" ]; then
 	chown $install_owner:$install_owner $HCOMPONENT_CONF_DIR
     fi    
 elif [ "${HCOMPONENT_NAME}" = "kafka" ]; then
-    HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/config
+    HCOMPONENT_CONF_DIR=${PROJ_LIB_DIR}/ranger-kafka-plugin-impl
 elif [ "${HCOMPONENT_NAME}" = "hadoop" ]; then
     HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}
 elif [ "${HCOMPONENT_NAME}" = "yarn" ]; then
