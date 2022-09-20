@@ -38,7 +38,7 @@ public class RangerConfigConstants {
     public static final	String  XASECURE_UPDATE_XAPOLICIES_ON_GRANT				= "xasecure.<ServiceType>.update.xapolicies.on.grant.revoke";	
 
     //Legacy Files
-    public static final String  XASECURE_AUDIT_FILE								= "xasecure-audit.xml";
+    public static final String  XASECURE_AUDIT_FILE								= "ranger-<ServiceType>-audit.xml";
     public static final String  XASECURE_SECURITY_FILE							= "xasecure-<ServiceType>-security.xml";
     public static final String  XASECURE_POLICYMGR_SSL_FILE						= "/etc/<ServiceType>/conf/xasecure-policymgr-ssl.xml";
 

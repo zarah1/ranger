@@ -120,7 +120,7 @@ public class RangerLegacyConfigBuilder {
 					File f = new File(loc);
 					if ( f.exists() && f.canRead()) {
 						File parentFile = new File(loc).getParentFile();
-								   ret  = new File(parentFile, RangerConfigConstants.XASECURE_AUDIT_FILE).toURI().toURL();
+								   ret  = new File(parentFile, getPropertyName(RangerConfigConstants.XASECURE_AUDIT_FILE, serviceType)).toURI().toURL();
 						break;
 					}
 				}

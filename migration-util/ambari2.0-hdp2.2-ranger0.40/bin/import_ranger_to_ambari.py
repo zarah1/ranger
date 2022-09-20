@@ -909,7 +909,7 @@ def get_hdfs_plugin_configuration():
 	base_hadoop_conf_path = '/etc/hadoop/conf/'
 	hdfs_site_xml_path = os.path.join(base_hadoop_conf_path, 'hdfs-site.xml')
 	hdfs_site_xml_properties = import_properties_from_xml(hdfs_site_xml_path)
-	xasecure_audit_xml_path = os.path.join(base_hadoop_conf_path, 'xasecure-audit.xml')
+	xasecure_audit_xml_path = os.path.join(base_hadoop_conf_path, 'ranger-hdfs-audit.xml')
 	hdfs_plugin_install_properties = import_properties_from_xml(xasecure_audit_xml_path, hdfs_plugin_install_properties)
 	xasecure_hdfs_security_xml_path = os.path.join(base_hadoop_conf_path, 'xasecure-hdfs-security.xml')
 	hdfs_plugin_install_properties = import_properties_from_xml(xasecure_hdfs_security_xml_path, hdfs_plugin_install_properties)
@@ -928,7 +928,7 @@ def get_hive_plugin_configuration():
 	base_hive_conf_path = '/etc/hive/conf/'
 	hive_server2_xml_path = os.path.join(base_hive_conf_path, 'hiveserver2-site.xml')
 	hive_server2_xml_properties = import_properties_from_xml(hive_server2_xml_path)
-	xasecure_audit_xml_path = os.path.join(base_hive_conf_path, 'xasecure-audit.xml')
+	xasecure_audit_xml_path = os.path.join(base_hive_conf_path, 'ranger-hive-audit.xml')
 	hive_plugin_install_properties = import_properties_from_xml(xasecure_audit_xml_path, hive_plugin_install_properties)
 	xasecure_hive_security_xml_path = os.path.join(base_hive_conf_path, 'xasecure-hive-security.xml')
 	hive_plugin_install_properties = import_properties_from_xml(xasecure_hive_security_xml_path, hive_plugin_install_properties)
@@ -949,7 +949,7 @@ def get_hbase_plugin_configuration():
 	base_hbase_conf_path = '/etc/hbase/conf/'
 	hbase_site_xml_path = os.path.join(base_hbase_conf_path, 'hbase-site.xml')
 	hbase_site_xml_properties = import_properties_from_xml(hbase_site_xml_path)
-	xasecure_audit_xml_path = os.path.join(base_hbase_conf_path, 'xasecure-audit.xml')
+	xasecure_audit_xml_path = os.path.join(base_hbase_conf_path, 'ranger-hbase-audit.xml')
 	hbase_plugin_install_properties = import_properties_from_xml(xasecure_audit_xml_path, hbase_plugin_install_properties)
 	xasecure_hbase_security_xml_path = os.path.join(base_hbase_conf_path, 'xasecure-hbase-security.xml')
 	hbase_plugin_install_properties = import_properties_from_xml(xasecure_hbase_security_xml_path, hbase_plugin_install_properties)
@@ -968,7 +968,7 @@ def get_knox_plugin_configuration():
 	knox_plugin_install_properties = dict()
 	print('knox plugin is present and installed to ranger, configuring to setup in ambari.')
 	base_knox_conf_path = '/etc/knox/conf/'
-	xasecure_audit_xml_path = os.path.join(base_knox_conf_path, 'xasecure-audit.xml')
+	xasecure_audit_xml_path = os.path.join(base_knox_conf_path, 'ranger-knox-audit.xml')
 	knox_plugin_install_properties = import_properties_from_xml(xasecure_audit_xml_path, knox_plugin_install_properties)
 	xasecure_knox_security_xml_path = os.path.join(base_knox_conf_path, 'xasecure-knox-security.xml')
 	knox_plugin_install_properties = import_properties_from_xml(xasecure_knox_security_xml_path, knox_plugin_install_properties)
@@ -986,7 +986,7 @@ def get_storm_plugin_configuration():
 	storm_plugin_install_properties = dict()
 	print('storm plugin is present and installed to ranger, configuring to setup in ambari.')
 	base_knox_conf_path = '/etc/storm/conf/'
-	xasecure_audit_xml_path = os.path.join(base_knox_conf_path, 'xasecure-audit.xml')
+	xasecure_audit_xml_path = os.path.join(base_knox_conf_path, 'ranger-storm-audit.xml')
 	storm_plugin_install_properties = import_properties_from_xml(xasecure_audit_xml_path, storm_plugin_install_properties)
 	xasecure_storm_security_xml_path = os.path.join(base_knox_conf_path, 'xasecure-storm-security.xml')
 	storm_plugin_install_properties = import_properties_from_xml(xasecure_storm_security_xml_path, storm_plugin_install_properties)
