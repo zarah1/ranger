@@ -125,6 +125,7 @@ PLUGIN_DEPENDENT_LIB_DIR=lib/"${PROJ_NAME}-${COMPONENT_NAME}-impl"
 PROJ_LIB_PLUGIN_DIR=${PROJ_INSTALL_DIR}/${PLUGIN_DEPENDENT_LIB_DIR}
 
 HCOMPONENT_INSTALL_DIR_NAME=$(getInstallProperty 'COMPONENT_INSTALL_DIR_NAME')
+HCOMPONENT_LIB_DIR_NAME=$(getInstallProperty 'COMPONENT_LIB_DIR_NAME')
 
 
 CUSTOM_USER=$(getInstallProperty 'CUSTOM_USER')
@@ -211,6 +212,10 @@ elif [ "${HCOMPONENT_NAME}" = "sqoop" ]; then
     HCOMPONENT_LIB_DIR=${HCOMPONENT_INSTALL_DIR}/server/lib
 elif [ "${HCOMPONENT_NAME}" = "kylin" ]; then
     HCOMPONENT_LIB_DIR=${HCOMPONENT_INSTALL_DIR}/tomcat/webapps/kylin/WEB-INF/lib
+fi
+if [ "${HCOMPONENT_LIB_DIR_NAME}" != "" ]
+then
+    HCOMPONENT_LIB_DIR=${HCOMPONENT_LIB_DIR_NAME}
 fi
 
 HCOMPONENT_CONF_DIR=${HCOMPONENT_INSTALL_DIR}/conf
@@ -513,6 +518,7 @@ then
 			fi
 			if [ ! -f ${HCOMPONENT_LIB_DIR}/${bn} ] && [ ! -d  ${HCOMPONENT_LIB_DIR}/${bn} ]
 			then
+			  log "ln -s lib file: ${f} to ${HCOMPONENT_LIB_DIR}/${bn} ..."
 				ln -s ${f} ${HCOMPONENT_LIB_DIR}/${bn}
 			fi
 		fi
