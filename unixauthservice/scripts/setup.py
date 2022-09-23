@@ -523,11 +523,13 @@ def main():
         mergeProps['ranger.usersync.policymgr.alias'] = 'ranger.usersync.policymgr.password'
 
     if ('ranger.usersync.policymgr.password' not in mergeProps):
-        mergeProps['ranger.usersync.policymgr.password'] = 'rangerusersync'
+        # mergeProps['ranger.usersync.policymgr.password'] = 'rangerusersync'
+        mergeProps['ranger.usersync.policymgr.password'] = rangerUsersync_password
 
     usersyncKSPath = mergeProps['ranger.usersync.policymgr.keystore']
     pmgrAlias = mergeProps['ranger.usersync.policymgr.alias']
     pmgrPasswd = mergeProps['ranger.usersync.policymgr.password']
+    print "[I] ranger.usersync.policymgr.password is " + pmgrPasswd
 
     updatePropertyInJCKSFile(usersyncKSPath, pmgrAlias, pmgrPasswd)
     os.chown(ugsyncCryptPath, ownerId, groupId)
