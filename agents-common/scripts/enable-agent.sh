@@ -518,7 +518,7 @@ then
 			fi
 			if [ ! -f ${HCOMPONENT_LIB_DIR}/${bn} ] && [ ! -d  ${HCOMPONENT_LIB_DIR}/${bn} ]
 			then
-			  log "ln -s lib file: ${f} to ${HCOMPONENT_LIB_DIR}/${bn} ..."
+			  log "linking lib file: ${f} to ${HCOMPONENT_LIB_DIR}/${bn} ..."
 				ln -s ${f} ${HCOMPONENT_LIB_DIR}/${bn}
 			fi
 		fi
