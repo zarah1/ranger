@@ -57,6 +57,8 @@ public class EmbeddedServer {
 	private static final String AUTH_TYPE_KERBEROS = "kerberos";
     private static final String AUTHENTICATION_TYPE = "hadoop.security.authentication";
     private static final String ADMIN_USER_PRINCIPAL = "ranger.admin.kerberos.principal";
+	private static final String AUDIT_SOURCE_TYPE = "ranger.audit.source.type";
+	private static final String AUDIT_SOURCE_SOLR = "solr";
     private static final String SOLR_BOOTSTRAP_ENABLED = "ranger.audit.solr.bootstrap.enabled";
     private static final String ADMIN_USER_KEYTAB = "ranger.admin.kerberos.keytab";
 
@@ -270,19 +272,22 @@ public class EmbeddedServer {
 	private void startServer(final Tomcat server) {
 		try {
 
-			try {
-				boolean solrBootstrapEnabled = Boolean.valueOf(getConfig(
-						SOLR_BOOTSTRAP_ENABLED, "true"));
-				if (solrBootstrapEnabled) {
-					String servername = getConfig("servername");
-					LOG.info("Server Name : " + servername);
-					if (servername.equalsIgnoreCase(ADMIN_SERVER_NAME)) {
-						SolrCollectionBoostrapper solrSetup = new SolrCollectionBoostrapper();
-						solrSetup.start();
+			String servername = getConfig("servername");
+			if (servername.equalsIgnoreCase(ADMIN_SERVER_NAME)) {
+				String auditSourceType = getConfig(AUDIT_SOURCE_TYPE, "db");
+				if (AUDIT_SOURCE_SOLR.equalsIgnoreCase(auditSourceType)) {
+					boolean solrBootstrapEnabled = Boolean.parseBoolean(getConfig(SOLR_BOOTSTRAP_ENABLED, "true"));
+					if (solrBootstrapEnabled) {
+						try {
+							SolrCollectionBoostrapper solrSetup = new SolrCollectionBoostrapper();
+							solrSetup.start();
+						} catch (Exception e) {
+							LOG.severe("Error while setting solr " + e);
+						}
 					}
+				} else {
+					LOG.severe("Warning not match audit source type");
 				}
-			} catch (Exception e) {
-				LOG.severe("Error while setting solr " + e);
 			}
 
 			server.start();
