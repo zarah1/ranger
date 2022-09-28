@@ -53,6 +53,8 @@ LOGFILE=$(eval echo " $(get_prop 'LOGFILE' $PROPFILE)")
 PYTHON_COMMAND_INVOKER=$(get_prop 'PYTHON_COMMAND_INVOKER' $PROPFILE)
 DB_FLAVOR=$(get_prop 'DB_FLAVOR' $PROPFILE)
 SQL_CONNECTOR_JAR=$(get_prop 'SQL_CONNECTOR_JAR' $PROPFILE)
+ranger_service_host=$(get_prop 'ranger_service_host' $PROPFILE)
+ranger_service_http_port=$(get_prop 'ranger_service_http_port' $PROPFILE)
 db_root_user=$(get_prop 'db_root_user' $PROPFILE)
 db_root_password=$(get_prop 'db_root_password' $PROPFILE)
 db_host=$(get_prop 'db_host' $PROPFILE)
@@ -421,6 +423,20 @@ update_properties() {
 	else
 		log "[E] $to_file_default does not exists" ; exit 1;
         fi
+
+  if [ "${ranger_service_host}" != "" ]
+	then
+                propertyName=ranger.service.host
+                newPropertyValue="${ranger_service_host}"
+                updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+	fi
+
+  if [ "${ranger_service_http_port}" != "" ]
+	then
+                propertyName=ranger.service.http.port
+                newPropertyValue="${ranger_service_http_port}"
+                updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+	fi
 
 	if [ "${spnego_principal}" != "" ]
 	then
