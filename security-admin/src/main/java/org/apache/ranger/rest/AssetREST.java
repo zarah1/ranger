@@ -506,7 +506,10 @@ public class AssetREST {
 	@Encoded
 	public String getResourceJSON(@Context HttpServletRequest request,
 			@PathParam("repository") String repository) {
-		
+
+		logger.info("org.apache.ranger.rest.AssetREST.getResourceJSON().getRequestURL: " + request.getRequestURL());
+		logger.info("org.apache.ranger.rest.AssetREST.getResourceJSON().getQueryString: " + request.getQueryString());
+
 		String            epoch       = request.getParameter("epoch");
 		X509Certificate[] certchain   = (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 		String            ipAddress   = request.getHeader("X-FORWARDED-FOR");
