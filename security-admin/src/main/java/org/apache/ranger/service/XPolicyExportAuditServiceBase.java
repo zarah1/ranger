@@ -79,6 +79,8 @@ public abstract class XPolicyExportAuditServiceBase<T extends XXPolicyExportAudi
 		VXPolicyExportAuditList returnList = new VXPolicyExportAuditList();
 		List<VXPolicyExportAudit> xPolicyExportAuditList = new ArrayList<VXPolicyExportAudit>();
 
+		System.out.println("org.apache.ranger.service.XPolicyExportAuditServiceBase.searchXPolicyExportAudits().searchCriteria" + searchCriteria);
+
 		List<T> resultList = searchResources(searchCriteria,
 				searchFields, sortFields, returnList);
 

@@ -553,6 +553,8 @@ public class AssetREST {
 	@PreAuthorize("@rangerPreAuthSecurityHandler.isAPIAccessible(\"" + RangerAPIList.SEARCH_X_POLICY_EXPORT_AUDITS + "\")")
 	public VXPolicyExportAuditList searchXPolicyExportAudits(
 			@Context HttpServletRequest request) {
+		System.out.println("org.apache.ranger.rest.AssetREST.searchXPolicyExportAudits().getRequestURL: " + request.getRequestURL());
+		System.out.println("org.apache.ranger.rest.AssetREST.searchXPolicyExportAudits().getQueryString: " + request.getQueryString());
 
 		SearchCriteria searchCriteria = searchUtil.extractCommonCriterias(
 				request, xPolicyExportAudits.sortFields);

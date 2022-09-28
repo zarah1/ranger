@@ -719,6 +719,7 @@ public class SearchUtil {
 		// [2] Add order by clause
 		addOrderByClause(queryClause, sortClause);
 
+		System.out.println("org.apache.ranger.common.SearchUtil.createSearchQuery().searchString: " + queryStr + queryClause.toString());
 		// [3] Create Query Object
 		Query query = em.createQuery(
 				queryStr + queryClause);

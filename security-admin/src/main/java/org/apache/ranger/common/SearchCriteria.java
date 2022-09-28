@@ -196,4 +196,22 @@ public class SearchCriteria {
 		this.isDistinct = isDistinct;
 	}
 
+	@Override
+	public String toString() {
+		return "SearchCriteria{" +
+				"startIndex=" + startIndex +
+				", maxRows=" + maxRows +
+				", sortBy='" + sortBy + '\'' +
+				", sortType='" + sortType + '\'' +
+				", getCount=" + getCount +
+				", ownerId=" + ownerId +
+				", familyOnly=" + familyOnly +
+				", getChildren=" + getChildren +
+				", isDistinct=" + isDistinct +
+				", paramList=" + paramList +
+				", nullParamList=" + nullParamList +
+				", notNullParamList=" + notNullParamList +
+				", searchGroups=" + searchGroups +
+				'}';
+	}
 }
