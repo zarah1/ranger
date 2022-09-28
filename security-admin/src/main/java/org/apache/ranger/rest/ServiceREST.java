@@ -2984,6 +2984,10 @@ public class ServiceREST {
 					+ lastActivationTime + ", " + pluginId + ", "
 					+ clusterName + ", " + supportsPolicyDeltas + ")");
 		}
+
+		System.out.println("org.apache.ranger.rest.ServiceREST.getSecureServicePoliciesIfUpdated().getRequestURL: " + request.getRequestURL());
+		System.out.println("org.apache.ranger.rest.ServiceREST.getSecureServicePoliciesIfUpdated().getQueryString: " + request.getQueryString());
+
 		ServicePolicies ret = null;
 		int httpCode = HttpServletResponse.SC_OK;
 		String logMsg = null;
