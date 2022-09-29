@@ -26,6 +26,11 @@
 	</property>
 
 	<property>
+		<name>ranger.plugin.yarn.access.cluster.name</name>
+		<value>DEMOYARNCluster</value>
+	</property>
+
+	<property>
 		<name>ranger.plugin.yarn.policy.source.impl</name>
 		<value>org.apache.ranger.admin.client.RangerAdminRESTClient</value>
 		<description>
