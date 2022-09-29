@@ -26,6 +26,11 @@
 	</property>
 
 	<property>
+		<name>ranger.plugin.hdfs.access.cluster.name</name>
+		<value>DEMOHDFSCluster</value>
+	</property>
+
+	<property>
 		<name>ranger.plugin.hdfs.policy.source.impl</name>
 		<value>org.apache.ranger.admin.client.RangerAdminRESTClient</value>
 		<description>
