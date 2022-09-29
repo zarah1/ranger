@@ -26,6 +26,11 @@
 	</property>
 
 	<property>
+		<name>ranger.plugin.hive.access.cluster.name</name>
+		<value>DEMOHiveCluster</value>
+	</property>
+
+	<property>
 		<name>ranger.plugin.hive.policy.source.impl</name>
 		<value>org.apache.ranger.admin.client.RangerAdminRESTClient</value>
 		<description>
