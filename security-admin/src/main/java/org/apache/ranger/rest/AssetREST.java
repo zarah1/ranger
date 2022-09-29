@@ -507,9 +507,6 @@ public class AssetREST {
 	public String getResourceJSON(@Context HttpServletRequest request,
 			@PathParam("repository") String repository) {
 
-		System.out.println("org.apache.ranger.rest.AssetREST.getResourceJSON().getRequestURL: " + request.getRequestURL());
-		System.out.println("org.apache.ranger.rest.AssetREST.getResourceJSON().getQueryString: " + request.getQueryString());
-
 		String            epoch       = request.getParameter("epoch");
 		X509Certificate[] certchain   = (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 		String            ipAddress   = request.getHeader("X-FORWARDED-FOR");
@@ -556,8 +553,6 @@ public class AssetREST {
 	@PreAuthorize("@rangerPreAuthSecurityHandler.isAPIAccessible(\"" + RangerAPIList.SEARCH_X_POLICY_EXPORT_AUDITS + "\")")
 	public VXPolicyExportAuditList searchXPolicyExportAudits(
 			@Context HttpServletRequest request) {
-		System.out.println("org.apache.ranger.rest.AssetREST.searchXPolicyExportAudits().getRequestURL: " + request.getRequestURL());
-		System.out.println("org.apache.ranger.rest.AssetREST.searchXPolicyExportAudits().getQueryString: " + request.getQueryString());
 
 		SearchCriteria searchCriteria = searchUtil.extractCommonCriterias(
 				request, xPolicyExportAudits.sortFields);
