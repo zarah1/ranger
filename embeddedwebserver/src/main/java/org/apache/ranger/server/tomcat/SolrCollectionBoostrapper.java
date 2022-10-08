@@ -268,7 +268,13 @@ public class SolrCollectionBoostrapper extends Thread {
 					return true;
 				} else {
 					logger.info("Config exist with name " + solr_config_name);
-					doIfConfigExists(solr_config_name, zkClient, path, tmpDir);
+					try {
+						doIfConfigExists(solr_config_name, zkClient, path, tmpDir);
+					} catch (IOException ex) {
+						logger.warning("IOException: Recheck for missing configuration files");
+						uploadMissingConfigFiles(zkClient, zkConfigManager,
+								solr_config_name);
+					}
 					return true;
 				}
 			} else {
@@ -297,7 +303,7 @@ public class SolrCollectionBoostrapper extends Thread {
 		logger.info("Config set exists for " + solr_collection_name
 				+ " collection. Refreshing it if needed...");
 		if (!tmpDir.mkdirs()) {
-			logger.severe("Cannot create directories for"
+			logger.severe("Cannot create directories for "
 					+ tmpDir.getAbsolutePath());
 		}
 		ZkConfigManager zkConfigManager = new ZkConfigManager(zkClient);
@@ -317,7 +323,7 @@ public class SolrCollectionBoostrapper extends Thread {
 	private void uploadMissingConfigFiles(SolrZkClient zkClient,
 			ZkConfigManager zkConfigManager, String configName)
 			throws IOException {
-		logger.info("Check any of the configs files are missing for config"
+		logger.info("Check any of the configs files are missing for config "
 				+ configName);
 
 		for (String configFile : configFiles) {
@@ -480,6 +486,7 @@ public class SolrCollectionBoostrapper extends Thread {
 	private boolean performACLOnZnode(Path zookeeperNodePath,
 			SolrZooKeeper solrZookeeper, String serviceName,
 			List<String> aclUserList) {
+		logger.info("zookeeperNodePath: " + zookeeperNodePath.toString());
 		List<ACL> aclListForZnodePath = new ArrayList<ACL>();
 		try {
 
