@@ -253,6 +253,7 @@ public class SolrCollectionBoostrapper extends Thread {
 
 			solrCloudClient.connect();
 			zkClient = solrCloudClient.getZkStateReader().getZkClient();
+			logger.info("first check zkClient connect status: " + zkClient.isConnected());
 
 			if (zkClient != null) {
 				ZkConfigManager zkConfigManager = new ZkConfigManager(zkClient);
@@ -320,6 +321,13 @@ public class SolrCollectionBoostrapper extends Thread {
 		}
 	}
 
+	/**
+	 * 检查solr_for_audit_setup/conf目录下的文件是否在zk的配置目录中存在，不存在则重新上传
+	 * @param zkClient zk客户端
+	 * @param zkConfigManager solr在zk中的ConfigManager
+	 * @param configName zk中conf目录的名称,由ranger.audit.solr.config.name配置参数决定
+	 * @throws IOException
+	 */
 	private void uploadMissingConfigFiles(SolrZkClient zkClient,
 			ZkConfigManager zkConfigManager, String configName)
 			throws IOException {
@@ -333,6 +341,7 @@ public class SolrCollectionBoostrapper extends Thread {
 				continue;
 			}
 			Path zkPath = Paths.get(configName, configFile);
+			logger.info("uploadMissingConfigFiles.zkPath: " + zkPath.toString());
 			if (zkConfigManager.configExists(zkPath.toString())) {
 				logger.info("Config file " + configFile
 						+ " has already uploaded properly.");
@@ -448,6 +457,7 @@ public class SolrCollectionBoostrapper extends Thread {
 	}
 
 	private boolean setupACL(SolrZkClient zkClient) {
+		logger.info("check zkClient connect status: " + zkClient.isConnected());
 		solrZookeeper = zkClient.getSolrZooKeeper();
 		String serviceName = "";
 		List<String> aclUserList = null;
@@ -633,6 +643,7 @@ public class SolrCollectionBoostrapper extends Thread {
 		}
 	}
 
+	// solr_for_audit_setup/conf目录
 	private File getConfigSetFolder() {
 		return configSetFolder;
 	}
