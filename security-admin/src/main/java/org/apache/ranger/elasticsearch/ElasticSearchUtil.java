@@ -126,12 +126,7 @@ public class ElasticSearchUtil {
         // See Also: https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-query-builders.html
         QueryAccumulator queryAccumulator = new QueryAccumulator(searchCriteria);
         if (searchCriteria.getParamList() != null) {
-            // searchFields.stream().forEach(queryAccumulator::addQuery);
-            SearchField[] stream = (SearchField[]) searchFields.toArray();
-            for (SearchField s: stream) {
-                queryAccumulator.addQuery(s);
-            }
-
+            searchFields.forEach(queryAccumulator::addQuery);
             // For now assuming there is only date field where range query will
             // be done. If we there are more than one, then we should create a
             // hashmap for each field name
@@ -140,13 +135,7 @@ public class ElasticSearchUtil {
             }
         }
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        // queryAccumulator.queries.stream().filter(x -> x != null).forEach(boolQueryBuilder::must);
-        QueryBuilder[] queryBuilder = (QueryBuilder[]) queryAccumulator.queries.toArray();
-        for (QueryBuilder q: queryBuilder) {
-            if (q != null) {
-                boolQueryBuilder.must(q);
-            }
-        }
+        queryAccumulator.queries.stream().filter(Objects::nonNull).forEach(boolQueryBuilder::must);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         setSortClause(searchCriteria, sortFields, searchSourceBuilder);
         searchSourceBuilder.from(searchCriteria.getStartIndex());
@@ -300,8 +289,8 @@ public class ElasticSearchUtil {
                 if (dataType == SearchField.DATA_TYPE.DATE) {
                     if (!(paramValue instanceof Date)) {
                         logger.error(String.format(
-                            "Search value is not a Java Date Object: %s %s %s",
-                            fieldName, searchType, paramValue));
+                                "Search value is not a Java Date Object: %s %s %s",
+                                fieldName, searchType, paramValue));
                     } else {
                         if (searchType == SearchField.SEARCH_TYPE.GREATER_EQUAL_THAN
                                 || searchType == SearchField.SEARCH_TYPE.GREATER_THAN) {
@@ -319,7 +308,7 @@ public class ElasticSearchUtil {
                         || searchType == SearchField.SEARCH_TYPE.LESS_EQUAL_THAN
                         || searchType == SearchField.SEARCH_TYPE.LESS_THAN) { //NOPMD
                     logger.warn(String.format("Range Queries Not Implemented: %s %s %s",
-                        fieldName, searchType, paramValue));
+                            fieldName, searchType, paramValue));
                     return null;
                 } else {
                     if (searchType == SearchField.SEARCH_TYPE.PARTIAL) {
