@@ -126,7 +126,7 @@ public class ElasticSearchUtil {
         // See Also: https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-query-builders.html
         QueryAccumulator queryAccumulator = new QueryAccumulator(searchCriteria);
         if (searchCriteria.getParamList() != null) {
-            searchFields.forEach(queryAccumulator::addQuery);
+            searchFields.stream().forEach(queryAccumulator::addQuery);
             // For now assuming there is only date field where range query will
             // be done. If we there are more than one, then we should create a
             // hashmap for each field name
@@ -135,7 +135,7 @@ public class ElasticSearchUtil {
             }
         }
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        queryAccumulator.queries.stream().filter(Objects::nonNull).forEach(boolQueryBuilder::must);
+        queryAccumulator.queries.stream().filter(x -> x != null).forEach(boolQueryBuilder::must);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         setSortClause(searchCriteria, sortFields, searchSourceBuilder);
         searchSourceBuilder.from(searchCriteria.getStartIndex());
