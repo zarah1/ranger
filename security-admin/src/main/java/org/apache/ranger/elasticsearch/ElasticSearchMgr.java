@@ -29,7 +29,6 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.impl.auth.SPNegoSchemeFactory;
 import org.apache.log4j.Logger;
 import org.apache.ranger.audit.destination.ElasticSearchAuditDestination;
-import org.apache.ranger.audit.provider.MiscUtil;
 import org.apache.ranger.authorization.credutils.CredentialsProviderUtil;
 import org.apache.ranger.authorization.credutils.kerberos.KerberosCredentialsProvider;
 import org.apache.ranger.common.PropertiesUtil;
@@ -42,6 +41,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosTicket;
 import java.io.File;
 import java.security.PrivilegedActionException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -97,11 +97,16 @@ public class ElasticSearchMgr {
 	}
 
 	public static RestClientBuilder getRestClientBuilder(String urls, String protocol, String user, String password, int port) {
-		RestClientBuilder restClientBuilder = RestClient.builder(
-				MiscUtil.toArray(urls, ",").stream()
-						.map(x -> new HttpHost(x, port, protocol))
-						.<HttpHost>toArray(HttpHost[]::new)
-		);
+//		RestClientBuilder restClientBuilder = RestClient.builder(
+//				MiscUtil.toArray(urls, ",").stream()
+//						.map(x -> new HttpHost(x, port, protocol))
+//						.<HttpHost>toArray(HttpHost[]::new)
+//		);
+		ArrayList<HttpHost> arr = new ArrayList<>();
+		for (String s: urls.split(",")) {
+			arr.add(new HttpHost(s, port, protocol));
+		}
+		RestClientBuilder restClientBuilder = RestClient.builder(arr.toArray(new HttpHost[arr.size()]));
 		if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(password) && !user.equalsIgnoreCase("NONE") && !password.equalsIgnoreCase("NONE")) {
 			if (password.contains("keytab") && new File(password).exists()) {
 				final KerberosCredentialsProvider credentialsProvider =
