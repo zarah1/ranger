@@ -496,7 +496,6 @@ public class SolrCollectionBoostrapper extends Thread {
 	private boolean performACLOnZnode(Path zookeeperNodePath,
 			SolrZooKeeper solrZookeeper, String serviceName,
 			List<String> aclUserList) {
-		logger.info("zookeeperNodePath: " + zookeeperNodePath.toString());
 		List<ACL> aclListForZnodePath = new ArrayList<ACL>();
 		try {
 
@@ -552,7 +551,7 @@ public class SolrCollectionBoostrapper extends Thread {
 						"world", "anyone")));
 			}
 
-			if (aclListForZnodePath != null && !aclListForZnodePath.isEmpty()) {
+			if (!aclListForZnodePath.isEmpty()) {
 				solrZookeeper.setACL(zookeeperNodePath.toString(),
 						aclListForZnodePath, -1);
 			}

@@ -172,6 +172,8 @@
         <kafka.version>2.1.0-cdh6.2.0</kafka.version>
         <zookeeper.version>3.4.5-cdh6.2.0</zookeeper.version>
         <hive.version>2.1.1-cdh6.2.0</hive.version>
+        <solr.version>7.4.0-cdh6.2.0</solr.version>
+        <elasticsearch.version>7.6.0</elasticsearch.version>
 
         <hbase-shaded-protobuf>2.2.0</hbase-shaded-protobuf>
         <hbase-shaded-netty>2.2.0</hbase-shaded-netty>
@@ -220,7 +222,7 @@
         <security-agent-install-dir>hadoop-security/plugins</security-agent-install-dir>
         <servlet.api.version>2.5</servlet.api.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
-        <solr.version>7.7.1</solr.version>
+        <!--<solr.version>7.7.1</solr.version>-->
         <sun-jersey-client.version>1.19</sun-jersey-client.version>
         <spring-ldap-core.version>2.3.2.RELEASE</spring-ldap-core.version>
         <springframework.security.version>4.2.13.RELEASE</springframework.security.version>

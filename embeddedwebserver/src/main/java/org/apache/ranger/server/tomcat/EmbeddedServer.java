@@ -59,7 +59,9 @@ public class EmbeddedServer {
     private static final String ADMIN_USER_PRINCIPAL = "ranger.admin.kerberos.principal";
 	private static final String AUDIT_SOURCE_TYPE = "ranger.audit.source.type";
 	private static final String AUDIT_SOURCE_SOLR = "solr";
+	private static final String AUDIT_SOURCE_ES = "elasticsearch";
     private static final String SOLR_BOOTSTRAP_ENABLED = "ranger.audit.solr.bootstrap.enabled";
+	private static final String ES_BOOTSTRAP_ENABLED = "ranger.audit.elasticsearch.bootstrap.enabled";
     private static final String ADMIN_USER_KEYTAB = "ranger.admin.kerberos.keytab";
 
 	private static final String ADMIN_NAME_RULES = "hadoop.security.auth_to_local";
@@ -283,6 +285,16 @@ public class EmbeddedServer {
 							solrSetup.start();
 						} catch (Exception e) {
 							LOG.severe("Error while setting solr " + e);
+						}
+					}
+				} else if (AUDIT_SOURCE_ES.equalsIgnoreCase(auditSourceType)) {
+					boolean esBootstrapEnabled = Boolean.parseBoolean(getConfig(ES_BOOTSTRAP_ENABLED, "true"));
+					if (esBootstrapEnabled) {
+						try {
+							ElasticSearchIndexBootStrapper esSchemaSetup = new ElasticSearchIndexBootStrapper();
+							esSchemaSetup.start();
+						} catch (Exception e) {
+							LOG.severe("Error while setting elasticsearch " + e);
 						}
 					}
 				} else {

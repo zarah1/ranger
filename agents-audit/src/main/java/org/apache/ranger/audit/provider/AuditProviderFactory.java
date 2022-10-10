@@ -28,11 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.util.ShutdownHookManager;
-import org.apache.ranger.audit.destination.DBAuditDestination;
-import org.apache.ranger.audit.destination.FileAuditDestination;
-import org.apache.ranger.audit.destination.HDFSAuditDestination;
-import org.apache.ranger.audit.destination.Log4JAuditDestination;
-import org.apache.ranger.audit.destination.SolrAuditDestination;
+import org.apache.ranger.audit.destination.*;
 import org.apache.ranger.audit.provider.hdfs.HdfsAuditProvider;
 import org.apache.ranger.audit.provider.kafka.KafkaAuditProvider;
 import org.apache.ranger.audit.provider.solr.SolrAuditProvider;
@@ -440,6 +436,8 @@ public class AuditProviderFactory {
 				provider = new HDFSAuditDestination();
 			} else if (providerName.equals("solr")) {
 				provider = new SolrAuditDestination();
+			} else if (providerName.equals("elasticsearch")) {
+				provider = new ElasticSearchAuditDestination();
 			} else if (providerName.equals("kafka")) {
 				provider = new KafkaAuditProvider();
 			} else if (providerName.equals("db")) {

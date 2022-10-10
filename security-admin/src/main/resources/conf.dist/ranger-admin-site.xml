@@ -323,6 +323,10 @@
                 <name>ranger.audit.solr.bootstrap.enabled</name>
                 <value></value>
         </property>
+		<property>
+				<name>ranger.audit.elasticsearch.bootstrap.enabled</name>
+				<value></value>
+		</property>
         <property>
 				<name>ranger.audit.solr.max.retry</name>
 				<value></value>

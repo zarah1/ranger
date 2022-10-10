@@ -75,6 +75,13 @@ javax_net_ssl_trustStore=$(get_prop 'javax_net_ssl_trustStore' $PROPFILE)
 javax_net_ssl_trustStorePassword=$(get_prop 'javax_net_ssl_trustStorePassword' $PROPFILE)
 audit_store=$(get_prop 'audit_store' $PROPFILE)
 audit_solr_urls=$(get_prop 'audit_solr_urls' $PROPFILE)
+audit_solr_bootstrap_enabled=$(get_prop 'audit_solr_bootstrap_enabled' $PROPFILE)
+audit_elasticsearch_urls=$(get_prop 'audit_elasticsearch_urls' $PROPFILE)
+audit_elasticsearch_port=$(get_prop 'audit_elasticsearch_port' $PROPFILE)
+audit_elasticsearch_user=$(get_prop 'audit_elasticsearch_user' $PROPFILE)
+audit_elasticsearch_password=$(get_prop 'audit_elasticsearch_password' $PROPFILE)
+audit_elasticsearch_index=$(get_prop 'audit_elasticsearch_index' $PROPFILE)
+audit_elasticsearch_bootstrap_enabled=$(get_prop 'audit_elasticsearch_bootstrap_enabled' $PROPFILE)
 audit_solr_user=$(get_prop 'audit_solr_user' $PROPFILE)
 audit_solr_password=$(get_prop 'audit_solr_password' $PROPFILE)
 audit_solr_zookeepers=$(get_prop 'audit_solr_zookeepers' $PROPFILE)
@@ -713,6 +720,38 @@ update_properties() {
 		propertyName=ranger.audit.solr.urls
 		newPropertyValue=${audit_solr_urls}
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.solr.bootstrap.enabled
+		newPropertyValue=${audit_solr_bootstrap_enabled}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+	fi
+
+	if [ "${audit_store}" == "elasticsearch" ]
+	then
+		propertyName=ranger.audit.elasticsearch.urls
+		newPropertyValue=${audit_elasticsearch_urls}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.port
+		newPropertyValue=${audit_elasticsearch_port}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.user
+		newPropertyValue=${audit_elasticsearch_user}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.password
+		newPropertyValue=${audit_elasticsearch_password}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.index
+		newPropertyValue=${audit_elasticsearch_index}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.bootstrap.enabled
+		newPropertyValue=${audit_elasticsearch_bootstrap_enabled}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
 	fi
 
 	if [ "${audit_store}" != "" ]
