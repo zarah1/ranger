@@ -81,6 +81,8 @@ audit_elasticsearch_port=$(get_prop 'audit_elasticsearch_port' $PROPFILE)
 audit_elasticsearch_user=$(get_prop 'audit_elasticsearch_user' $PROPFILE)
 audit_elasticsearch_password=$(get_prop 'audit_elasticsearch_password' $PROPFILE)
 audit_elasticsearch_index=$(get_prop 'audit_elasticsearch_index' $PROPFILE)
+audit_elasticsearch_no_shards=$(get_prop 'audit_elasticsearch_no_shards' $PROPFILE)
+ranger_elasticsearch_no_replica=$(get_prop 'ranger_elasticsearch_no_replica' $PROPFILE)
 audit_elasticsearch_bootstrap_enabled=$(get_prop 'audit_elasticsearch_bootstrap_enabled' $PROPFILE)
 audit_solr_user=$(get_prop 'audit_solr_user' $PROPFILE)
 audit_solr_password=$(get_prop 'audit_solr_password' $PROPFILE)
@@ -253,6 +255,16 @@ init_variables(){
 	if [ "${audit_store}" == "solr" ] ;then
 		if [ "${audit_solr_urls}" == "" ] ;then
 			log "[I] Please provide valid URL for 'solr' audit store!"
+			exit 1
+		fi
+	fi
+	if [ "${audit_store}" == "elasticsearch" ] ;then
+		if [ "${audit_elasticsearch_urls}" == "" ] ;then
+			log "[I] Please provide valid URL for 'elasticsearch' audit store!"
+			exit 1
+		fi
+		if [ "${audit_elasticsearch_port}" == "" ] ;then
+			log "[I] Please provide valid port for 'elasticsearch' audit store!"
 			exit 1
 		fi
 	fi
@@ -746,6 +758,14 @@ update_properties() {
 
 		propertyName=ranger.audit.elasticsearch.index
 		newPropertyValue=${audit_elasticsearch_index}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.no.shards
+		newPropertyValue=${audit_elasticsearch_no_shards}
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+		propertyName=ranger.audit.elasticsearch.no.replica
+		newPropertyValue=${ranger_elasticsearch_no_replica}
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 		propertyName=ranger.audit.elasticsearch.bootstrap.enabled

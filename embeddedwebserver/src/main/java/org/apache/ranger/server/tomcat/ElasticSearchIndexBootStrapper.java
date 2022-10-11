@@ -188,7 +188,7 @@ public class ElasticSearchIndexBootStrapper extends Thread {
 				long now = System.currentTimeMillis();
 				long elapsed = now - lastLoggedAt;
 				if (elapsed > TimeUnit.MINUTES.toMillis(1)) {
-					LOG.severe("Can't connect to ElasticSearch server: " + connectionString() + t);
+					LOG.severe("Can't connect to ElasticSearch server: " + connectionString() + " " + t);
 					return now;
 				} else {
 					return lastLoggedAt;

@@ -241,6 +241,10 @@
 		<kstruct.gethostname4j.version>0.0.2</kstruct.gethostname4j.version>
 		<jna.version>5.2.0</jna.version>
 		<jna-platform.version>5.2.0</jna-platform.version>
+        <lucene.version>8.4.0</lucene.version>
+        <hppc.version>0.8.0</hppc.version>
+        <joda.time.version>2.10.5</joda.time.version>
+        <log4j.core.version>2.11.1</log4j.core.version>
     </properties>
     <profiles>
         <profile>

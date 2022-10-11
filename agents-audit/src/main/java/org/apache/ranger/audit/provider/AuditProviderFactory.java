@@ -54,6 +54,7 @@ public class AuditProviderFactory {
 	public static final String AUDIT_LOG4J_IS_ENABLED_PROP = "xasecure.audit.log4j.is.enabled";
 	public static final String AUDIT_KAFKA_IS_ENABLED_PROP = "xasecure.audit.kafka.is.enabled";
 	public static final String AUDIT_SOLR_IS_ENABLED_PROP = "xasecure.audit.solr.is.enabled";
+	public static final String AUDIT_ELASTICSEARCH_IS_ENABLED_PROP = "xasecure.audit.elasticsearch.is.enabled";
 
 	public static final String AUDIT_DEST_BASE = "xasecure.audit.destination";
 	public static final String AUDIT_SHUTDOWN_HOOK_MAX_WAIT_SEC = "xasecure.audit.shutdown.hook.max.wait.seconds";
@@ -132,6 +133,8 @@ public class AuditProviderFactory {
 				AUDIT_KAFKA_IS_ENABLED_PROP, false);
 		boolean isAuditToSolrEnabled = MiscUtil.getBooleanProperty(props,
 				AUDIT_SOLR_IS_ENABLED_PROP, false);
+		boolean isAuditToElasticsearchEnabled = MiscUtil.getBooleanProperty(props,
+				AUDIT_ELASTICSEARCH_IS_ENABLED_PROP, false);
 
 		boolean isAuditFileCacheProviderEnabled = MiscUtil.getBooleanProperty(props,
 				AUDIT_IS_FILE_CACHE_PROVIDER_ENABLE_PROP, false);
@@ -273,8 +276,9 @@ public class AuditProviderFactory {
 			LOG.info("No v3 audit configuration found. Trying v2 audit configurations");
 			if (!isEnabled
 					|| !(isAuditToDbEnabled || isAuditToHdfsEnabled
-							|| isAuditToKafkaEnabled || isAuditToLog4jEnabled
-							|| isAuditToSolrEnabled || providers.size() == 0)) {
+					|| isAuditToKafkaEnabled || isAuditToLog4jEnabled
+					|| isAuditToSolrEnabled || isAuditToElasticsearchEnabled
+					|| providers.size() == 0)) {
 				LOG.info("AuditProviderFactory: Audit not enabled..");
 
 				mProvider = getDefaultProvider();
@@ -363,6 +367,20 @@ public class AuditProviderFactory {
 				}
 			}
 
+			if (isAuditToElasticsearchEnabled) {
+				LOG.info("ElasticsearchAuditProvider is enabled");
+				ElasticSearchAuditDestination elasticSearchAuditDestination = new ElasticSearchAuditDestination();
+				elasticSearchAuditDestination.init(props);
+
+				if (elasticSearchAuditDestination.isAsync()) {
+					AsyncAuditProvider asyncProvider = new AsyncAuditProvider(
+							"MyElasticSearchAuditProvider", 1000, 1000, elasticSearchAuditDestination);
+					providers.add(asyncProvider);
+				} else {
+					providers.add(elasticSearchAuditDestination);
+				}
+			}
+
 			if (isAuditToLog4jEnabled) {
 				Log4jAuditProvider log4jProvider = new Log4jAuditProvider();
 
@@ -430,23 +448,23 @@ public class AuditProviderFactory {
 						+ ", propertyPrefix=" + propPrefix, e);
 			}
 		} else {
-			if (providerName.equals("file")) {
+			if (providerName.equalsIgnoreCase("file")) {
 				provider = new FileAuditDestination();
 			} else if (providerName.equalsIgnoreCase("hdfs")) {
 				provider = new HDFSAuditDestination();
-			} else if (providerName.equals("solr")) {
+			} else if (providerName.equalsIgnoreCase("solr")) {
 				provider = new SolrAuditDestination();
-			} else if (providerName.equals("elasticsearch")) {
+			} else if (providerName.equalsIgnoreCase("elasticsearch")) {
 				provider = new ElasticSearchAuditDestination();
-			} else if (providerName.equals("kafka")) {
+			} else if (providerName.equalsIgnoreCase("kafka")) {
 				provider = new KafkaAuditProvider();
-			} else if (providerName.equals("db")) {
+			} else if (providerName.equalsIgnoreCase("db")) {
 				provider = new DBAuditDestination();
-			} else if (providerName.equals("log4j")) {
+			} else if (providerName.equalsIgnoreCase("log4j")) {
 				provider = new Log4JAuditDestination();
-			} else if (providerName.equals("batch")) {
+			} else if (providerName.equalsIgnoreCase("batch")) {
 				provider = new AuditBatchQueue(consumer);
-			} else if (providerName.equals("async")) {
+			} else if (providerName.equalsIgnoreCase("async")) {
 				provider = new AuditAsyncQueue(consumer);
 			} else {
 				LOG.error("Provider name doesn't have any class associated with it. providerName="

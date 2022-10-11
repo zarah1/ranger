@@ -208,18 +208,17 @@
                     <include>org.apache.tomcat:tomcat-annotations-api*</include>
                     <include>org.eclipse.jdt.core.compiler:ecj:jar:P20140317-1600</include>
                     <include>log4j:log4j</include>
-		    		<include>org.apache.hadoop:hadoop-auth:jar:${hadoop.version}</include>
-		    		<include>org.apache.ranger:ranger-plugins-common</include>                    
-		   			<include>org.slf4j:slf4j-api</include>
+                    <include>org.apache.hadoop:hadoop-auth:jar:${hadoop.version}</include>
+                    <include>org.apache.ranger:ranger-plugins-common</include>
+                    <include>org.slf4j:slf4j-api</include>
                     <include>org.apache.hadoop:hadoop-common</include>
                     <include>commons-logging:commons-logging</include>
                     <include>com.sun.jersey.contribs:jersey-multipart</include>
                     <include>com.google.guava:guava</include>
                     <include>commons-collections:commons-collections</include>
-                    <include>commons-configuration:commons-configuration</include>
                     <include>commons-lang:commons-lang</include>
-		    <include>commons-io:commons-io</include>
-		    <include>org.apache.solr:solr-solrj</include>
+                    <include>commons-io:commons-io</include>
+                    <include>org.apache.solr:solr-solrj</include>
                     <include>org.apache.httpcomponents:httpclient</include>
                     <include>org.apache.httpcomponents:httpcore</include>
                     <include>org.noggit:noggit</include>
@@ -233,6 +232,23 @@
                     <include>com.kstruct:gethostname4j:jar:${kstruct.gethostname4j.version}</include>
                     <include>net.java.dev.jna:jna:jar:${jna.version}</include>
                     <include>net.java.dev.jna:jna-platform:jar:${jna-platform.version}</include>
+                    <include>org.apache.ranger:credentialbuilder</include>
+                    <include>org.elasticsearch.client:elasticsearch-rest-client</include>
+                    <include>org.elasticsearch.client:elasticsearch-rest-high-level-client</include>
+                    <include>org.elasticsearch:elasticsearch-x-content</include>
+                    <include>org.elasticsearch:elasticsearch-core</include>
+                    <include>org.elasticsearch:elasticsearch</include>
+                    <include>org.elasticsearch.plugin:lang-mustache-client</include>
+                    <include>org.elasticsearch.plugin:rank-eval-client</include>
+                    <include>org.apache.httpcomponents:httpasyncclient</include>
+                    <include>org.apache.httpcomponents:httpcore-nio</include>
+                    <include>com.fasterxml.jackson.core:jackson-core</include>
+                    <include>org.apache.logging.log4j:log4j-core</include>
+                    <include>org.apache.logging.log4j:log4j-api</include>
+                    <include>org.apache.lucene:lucene-core</include>
+                    <include>com.carrotsearch:hppc</include>
+                    <include>joda-time:joda-time</include>
+                    <include>org.apache.ranger:ranger-plugins-cred</include>
                 </includes>
                 <unpack>false</unpack>
             </dependencySet>
