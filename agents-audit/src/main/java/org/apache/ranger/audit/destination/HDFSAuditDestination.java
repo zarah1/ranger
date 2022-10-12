@@ -19,6 +19,7 @@
 
 package org.apache.ranger.audit.destination;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,9 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.ranger.audit.model.AuditEventBase;
 import org.apache.ranger.audit.provider.MiscUtil;
 import org.apache.ranger.audit.utils.RollingTimeUtil;
@@ -49,12 +48,15 @@ public class HDFSAuditDestination extends AuditDestination {
 	public static final String PROP_HDFS_FILE_NAME_FORMAT = "filename.format";
 	public static final String PROP_HDFS_ROLLOVER = "file.rollover.sec";
 	public static final String PROP_HDFS_ROLLOVER_PERIOD = "file.rollover.period";
+	public static final String PROP_HDFS_LOG_CLEAN_INTERVAL = "log.retention.time";
 
 	int fileRolloverSec = 24 * 60 * 60; // In seconds
 
 	private String logFileNameFormat;
 
 	private String rolloverPeriod;
+
+	private int logClean = 7; // 审计日志保留时间,单位:天
 
 	boolean initDone = false;
 
@@ -97,6 +99,8 @@ public class HDFSAuditDestination extends AuditDestination {
 				+ PROP_HDFS_FILE_NAME_FORMAT);
 		fileRolloverSec = MiscUtil.getIntProperty(props, propPrefix + "."
 				+ PROP_HDFS_ROLLOVER, fileRolloverSec);
+		logClean = MiscUtil.getIntProperty(props, propPrefix + "."
+				+ PROP_HDFS_LOG_CLEAN_INTERVAL, logClean);
 
 		if (logFileNameFormat == null || logFileNameFormat.isEmpty()) {
 			logFileNameFormat = "%app-type%_ranger_audit_%hostname%" + ".log";
@@ -310,6 +314,59 @@ public class HDFSAuditDestination extends AuditDestination {
 		return logWriter;
 	}
 
+	/**
+	 * 清理历史审计日志
+	 * 保留时间由(xasecure.audit.destination.hdfs.log.retention.time)参数决定,单位:天
+	 * 		参数值为0则关闭清除策略
+	 * 清理时间间隔由(xasecure.audit.destination.hdfs.file.rollover.sec)参数决定,单位:分钟
+	 * @throws IOException
+	 */
+	private void cleanLogData() throws IOException {
+		if (logClean > 0) {
+			Date currentTime = new Date();
+			String parentFolder = MiscUtil.replaceTokens(logFolder,
+					currentTime.getTime());
+
+			String parent = parentFolder.substring(0, parentFolder.lastIndexOf(File.separator));
+
+			Configuration conf = createConfiguration();
+
+			FileSystem fileSystem = FileSystem.get(conf);
+
+			String substring = logFolder.substring(logFolder.lastIndexOf("%time:")).replace("%time:", "");
+			String dtFormat = substring.substring(0, substring.indexOf("%"));
+			if (dtFormat == null || dtFormat.trim().length() == 0) {
+				dtFormat = "yyyyMMdd";
+			}
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, logClean * -1);
+			int formattedTime = Integer.parseInt(MiscUtil.getFormattedTime(calendar.getTime().getTime(), dtFormat));
+			Trash trash = new Trash(conf);
+			Path parentPath = new Path(parent);
+			if (fileSystem.exists(parentPath)) {
+				Arrays.stream(fileSystem.listStatus(parentPath))
+						.filter(FileStatus::isDirectory)
+						.map(x -> x.getPath().getName())
+						.forEach(name -> {
+							if (Integer.parseInt(name) < formattedTime) {
+								try {
+									String delPath = parent + File.separator + name;
+									logger.info("delete trash hdfsPath: " + delPath);
+									trash.moveToTrash(new Path(delPath));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+			} else {
+				logger.warn("hdfsPath: " + parent + " is not exist");
+			}
+		} else {
+			logger.warn("log.retention.time less than 1 cannot be deleted");
+		}
+	}
+
 	Configuration createConfiguration() {
 		Configuration conf = new Configuration();
 		for (Map.Entry<String, String> entry : configProps.entrySet()) {
@@ -342,7 +399,7 @@ public class HDFSAuditDestination extends AuditDestination {
 			return;
 		}
 
-		if ( System.currentTimeMillis() > nextRollOverTime.getTime() ) {
+		if (System.currentTimeMillis() > nextRollOverTime.getTime()) {
 			logger.info("Closing file. Rolling over. name=" + getName()
 				+ ", fileName=" + currentFileName);
 			try {
@@ -370,6 +427,9 @@ public class HDFSAuditDestination extends AuditDestination {
 			} else {
 				nextRollOverTime = rollOverByDuration();
 			}
+
+			// 清理历史审计日志
+			cleanLogData();
 		}
 	}
 
