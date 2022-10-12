@@ -75,6 +75,9 @@
                     <include>org.apache.lucene:lucene-core</include>
                     <include>joda-time:joda-time</include>
                     <include>com.carrotsearch:hppc</include>
+                    <include>org.apache.httpcomponents:httpcore-nio</include>
+                    <include>com.fasterxml.jackson.core:jackson-core</include>
+                    <include>org.apache.logging.log4j:log4j-api</include>
 				</includes>
             </dependencySet>
             <dependencySet>
