@@ -464,6 +464,7 @@ then
                 	diff -w ${newfn} ${fullpathorgfn} > /dev/null 2>&1
                     if [ $? -ne 0 ]
                     then
+                      log "Create new file ${newfn} to ${fullpathorgfn}"
                     	cat ${newfn} > ${fullpathorgfn}
                     fi
                     

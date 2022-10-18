@@ -38,6 +38,7 @@ import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
@@ -47,6 +48,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosTicket;
 import java.io.File;
+import java.io.IOException;
 import java.security.PrivilegedActionException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -154,6 +156,13 @@ public class ElasticSearchAuditDestination extends AuditDestination {
             logError("Error sending message to ElasticSearch", t);
         }
         return ret;
+    }
+
+    private void cleanLogData () throws IOException {
+        DeleteRequest request = new DeleteRequest();
+        // evtTime
+        request.index(index).id();
+        client.delete(request, RequestOptions.DEFAULT);
     }
 
     /*
