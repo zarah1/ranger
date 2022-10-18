@@ -76,16 +76,9 @@ public class RangerConfiguration extends Configuration {
 
 		IOFileFilter regexFileFilter = new RegexFileFilter("ranger-.+xml");
 		Collection<File> configFileList = FileUtils.listFiles(serviceHomeDir, regexFileFilter, TrueFileFilter.INSTANCE);
-//		boolean flag = true;
 		for (File rangerConfigFile : configFileList) {
-			LOG.info("rangerConfigFileName: " + rangerConfigFile.getAbsoluteFile().getName());
+			LOG.info("rangerConfigFileName: " + rangerConfigFile.getAbsoluteFile());
 			try {
-//				if (serviceType.toUpperCase().equals("HIVE") && flag) {
-//					File file = new File(rangerConfigFile.getParentFile().getPath() + "/xasecure-audit.xml");
-//					FileUtils.copyFileToDirectory(file, destDir);
-//					flag = false;
-//					LOG.info("-----Source dir: " + file.getPath());
-//				}
 				FileUtils.copyFileToDirectory(rangerConfigFile, destDir);
 			} catch (IOException e) {
 				LOG.error("Copy ranger config file failed.", e);
