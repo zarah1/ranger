@@ -253,6 +253,7 @@ public class YarnClient extends BaseClient {
 			Map<String, String> configs) {
 
 		String errMsg = errMessage;
+		LOG.info("serviceName: " + serviceName + " configs: " + configs);
 		boolean connectivityStatus = false;
 		Map<String, Object> responseData = new HashMap<String, Object>();
 
