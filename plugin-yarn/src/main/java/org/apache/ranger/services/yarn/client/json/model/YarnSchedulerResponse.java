@@ -1,34 +1,15 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.apache.ranger.services.yarn.client.json.model;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, fieldVisibility=Visibility.ANY)
@@ -36,7 +17,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown=true)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class YarnSchedulerResponse implements java.io.Serializable {
+public class YarnSchedulerResponse {
+
     private static final long serialVersionUID = 1L;
 
     private YarnScheduler scheduler = null;
@@ -44,13 +26,13 @@ public class YarnSchedulerResponse implements java.io.Serializable {
     public YarnScheduler getScheduler() { return scheduler; }
 
     public List<String> getQueueNames() {
-    	List<String> ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<String>();
 
-    	if(scheduler != null) {
-    		scheduler.collectQueueNames(ret);
-    	}
+        if(scheduler != null) {
+            scheduler.collectQueueNames(ret);
+        }
 
-    	return ret;
+        return ret;
     }
 
 
@@ -67,9 +49,10 @@ public class YarnSchedulerResponse implements java.io.Serializable {
         public YarnSchedulerInfo getSchedulerInfo() { return schedulerInfo; }
 
         public void collectQueueNames(List<String> queueNames) {
-        	if(schedulerInfo != null) {
-        		schedulerInfo.collectQueueNames(queueNames, null);
-        	}
+            if(schedulerInfo != null) {
+                schedulerInfo.collectQueueNames(queueNames);
+                schedulerInfo.collectQueueNames(queueNames, null);
+            }
         }
     }
 
@@ -82,43 +65,34 @@ public class YarnSchedulerResponse implements java.io.Serializable {
         private static final long serialVersionUID = 1L;
 
         private String     queueName = null;
-        private YarnQueues queues    = null;
+
+        private YarnCDHSchedulerResponse.YarnRootQueue rootQueue = null;
+
+        private YarnHDPSchedulerResponse.YarnQueues queues    = null;
 
         public String getQueueName() { return queueName; }
 
-        public YarnQueues getQueues() { return queues; }
+        public YarnCDHSchedulerResponse.YarnRootQueue getRootQueue() { return rootQueue; }
 
-        public void collectQueueNames(List<String> queueNames, String parentQueueName) {
-        	if(queueName != null) {
-        		String queueFqdn = parentQueueName == null ? queueName : parentQueueName + "." + queueName;
+        public YarnHDPSchedulerResponse.YarnQueues getQueues() { return queues; }
 
-        		queueNames.add(queueFqdn);
 
-            	if(queues != null) {
-            		queues.collectQueueNames(queueNames, queueFqdn);
-            	}
-        	}
+        public void collectQueueNames(List<String> queueNames) {
+            if(rootQueue != null) {
+                rootQueue.collectQueueNames(queueNames);
+            }
         }
-    }
-
-    @JsonAutoDetect(getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE, fieldVisibility=Visibility.ANY)
-    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL )
-    @JsonIgnoreProperties(ignoreUnknown=true)
-    @XmlRootElement
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class YarnQueues implements java.io.Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private List<YarnSchedulerInfo> queue = null;
-
-        public List<YarnSchedulerInfo> getQueue() { return queue; }
 
         public void collectQueueNames(List<String> queueNames, String parentQueueName) {
-        	if(queue != null) {
-        		for(YarnSchedulerInfo schedulerInfo : queue) {
-        			schedulerInfo.collectQueueNames(queueNames, parentQueueName);
-        		}
-        	}
+            if(queueName != null) {
+                String queueFqdn = parentQueueName == null ? queueName : parentQueueName + "." + queueName;
+
+                queueNames.add(queueFqdn);
+
+                if(queues != null) {
+                    queues.collectQueueNames(queueNames, queueFqdn);
+                }
+            }
         }
     }
 }

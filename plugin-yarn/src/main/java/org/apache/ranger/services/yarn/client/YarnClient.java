@@ -32,13 +32,15 @@ import javax.security.auth.Subject;
 import org.apache.log4j.Logger;
 import org.apache.ranger.plugin.client.BaseClient;
 import org.apache.ranger.plugin.client.HadoopException;
-import org.apache.ranger.services.yarn.client.json.model.YarnSchedulerResponse;
+import org.apache.ranger.services.yarn.client.json.model.YarnCDHSchedulerResponse;
+import org.apache.ranger.services.yarn.client.json.model.YarnHDPSchedulerResponse;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.apache.ranger.services.yarn.client.json.model.YarnSchedulerResponse;
 
 public class YarnClient extends BaseClient {
 
@@ -56,6 +58,7 @@ public class YarnClient extends BaseClient {
 	String yarnQUrl;
 	String userName;
 	String password;
+	String yarnVersion;
 
 	public  YarnClient(String serviceName, Map<String, String> configs) {
 
@@ -64,6 +67,7 @@ public class YarnClient extends BaseClient {
 		this.yarnQUrl = configs.get("yarn.url");
 		this.userName = configs.get("username");
 		this.password = configs.get("password");
+		this.yarnVersion = configs.get("yarn.version");
 
 		if (this.yarnQUrl == null || this.yarnQUrl.isEmpty()) {
 			LOG.error("No value found for configuration 'yarn.url'. YARN resource lookup will fail");
@@ -75,8 +79,12 @@ public class YarnClient extends BaseClient {
 			LOG.error("No value found for configuration 'password'. YARN resource lookup will fail");
 		}
 
+		if (this.yarnVersion == null || this.yarnVersion.isEmpty()) {
+			LOG.error("No value found for configuration 'yarn.version'. YARN resource lookup will fail, you can choose [cdh/hdp]");
+		}
+
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Yarn Client is build with url [" + this.yarnQUrl + "] user: [" + this.userName + "], password: [" + "*********" + "]");
+			LOG.debug("Yarn Client is build with url [" + this.yarnQUrl + "] user: [" + this.userName + "], password: [" + "*********" + "] version: [" + this.yarnVersion + "]");
 		}
 	}
 
@@ -124,7 +132,6 @@ public class YarnClient extends BaseClient {
 							String url = currentUrl.trim() + YARN_LIST_API_ENDPOINT;
 							try {
 								response = getQueueResponse(url, client);
-
 								if (response != null) {
 									if(response.getStatus() == 200)
 									{
@@ -146,7 +153,13 @@ public class YarnClient extends BaseClient {
 							if (response != null && response.getStatus() == 200) {
 									String jsonString = response.getEntity(String.class);
 									Gson gson = new GsonBuilder().setPrettyPrinting().create();
-									YarnSchedulerResponse yarnQResponse = gson.fromJson(jsonString, YarnSchedulerResponse.class);
+									YarnSchedulerResponse yarnQResponse;
+									if (yarnVersion.trim().toLowerCase().equals("hdp")) {
+										yarnQResponse = gson.fromJson(jsonString, YarnHDPSchedulerResponse.class);
+									} else {
+										yarnQResponse = gson.fromJson(jsonString, YarnCDHSchedulerResponse.class);
+									}
+
 									if (yarnQResponse != null) {
 										List<String>  yarnQueueList = yarnQResponse.getQueueNames();
 										if (yarnQueueList != null) {
