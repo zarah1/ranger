@@ -79,7 +79,7 @@ public class YarnClient extends BaseClient {
 			LOG.error("No value found for configuration 'password'. YARN resource lookup will fail");
 		}
 
-		if (this.yarnVersion == null || this.yarnVersion.isEmpty()) {
+		if (this.yarnVersion == null || this.yarnVersion.isEmpty() || (!this.yarnVersion.toLowerCase().equals("hdp") && !this.yarnVersion.toLowerCase().equals("cdh"))) {
 			LOG.error("No value found for configuration 'yarn.version'. YARN resource lookup will fail, you can choose [cdh/hdp]");
 		}
 
@@ -161,7 +161,7 @@ public class YarnClient extends BaseClient {
 									}
 
 									if (yarnQResponse != null) {
-										List<String>  yarnQueueList = yarnQResponse.getQueueNames();
+										List<String>  yarnQueueList = yarnQResponse.getQueueNames(yarnVersion.trim().toLowerCase());
 										if (yarnQueueList != null) {
 											for ( String yarnQueueName : yarnQueueList) {
 												if ( existingQueueList != null && existingQueueList.contains(yarnQueueName)) {

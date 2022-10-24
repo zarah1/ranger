@@ -25,11 +25,11 @@ public class YarnSchedulerResponse {
 
     public YarnScheduler getScheduler() { return scheduler; }
 
-    public List<String> getQueueNames() {
+    public List<String> getQueueNames(String yarnVersion) {
         List<String> ret = new ArrayList<String>();
 
         if(scheduler != null) {
-            scheduler.collectQueueNames(ret);
+            scheduler.collectQueueNames(ret, yarnVersion);
         }
 
         return ret;
@@ -48,10 +48,13 @@ public class YarnSchedulerResponse {
 
         public YarnSchedulerInfo getSchedulerInfo() { return schedulerInfo; }
 
-        public void collectQueueNames(List<String> queueNames) {
+        public void collectQueueNames(List<String> queueNames, String yarnVersion) {
             if(schedulerInfo != null) {
-                schedulerInfo.collectQueueNames(queueNames);
-                schedulerInfo.collectQueueNames(queueNames, null);
+                if (yarnVersion.equals("hdp")) {
+                    schedulerInfo.collectQueueNames(queueNames, null);
+                } else {
+                    schedulerInfo.collectQueueNames(queueNames);
+                }
             }
         }
     }
