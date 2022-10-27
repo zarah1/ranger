@@ -79,6 +79,15 @@ public class RangerConfiguration extends Configuration {
 		for (File rangerConfigFile : configFileList) {
 			LOG.info("rangerConfigFileName: " + rangerConfigFile.getAbsoluteFile());
 			try {
+				if (serviceType.toUpperCase().equals("HIVE")) {
+					File file = new File(rangerConfigFile.getAbsolutePath() + "/hiveserver2-site.xml");
+					if (file.exists()) {
+						LOG.info("-----hiveserver2 file is exists: " + file.getAbsoluteFile());
+						FileUtils.copyFileToDirectory(file, destDir);
+					} else {
+						LOG.info("-----hiveserver2 file is not exists: " + file.getAbsoluteFile());
+					}
+				}
 				FileUtils.copyFileToDirectory(rangerConfigFile, destDir);
 			} catch (IOException e) {
 				LOG.error("Copy ranger config file failed.", e);
